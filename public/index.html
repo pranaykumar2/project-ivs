@@ -8,6 +8,10 @@
     <!-- Modern Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Add these in the head section of your HTML -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <!-- Font Imports -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
@@ -21,6 +25,7 @@
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/about.css">
 </head>
 <body>
 <nav class="navbar">
@@ -99,7 +104,7 @@
             </p>
 
             <div class="action-buttons">
-                <button class="primary-btn">
+                <button class="primary-btn" id="learnMoreBtn" data-target="about">
                     <span>Learn More</span>
                     <i class="ri-arrow-right-line"></i>
                 </button>
@@ -144,10 +149,134 @@
             </div>
         </div>
     </div>
+    <div class="scroll-indicator"></div>
 </main>
+
+<!-- About Section -->
+<section class="about-section" id="about">
+    <div class="about-background">
+        <!-- Add inside about-background div -->
+        <div class="modern-shapes">
+            <svg class="shape shape-1" viewBox="0 0 200 200">
+                <path d="M 0,100 C 0,0 100,0 100,100 S 200,200 200,100" fill="none" stroke="rgba(108, 99, 255, 0.2)" stroke-width="2"/>
+            </svg>
+            <svg class="shape shape-2" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(77, 132, 255, 0.2)" stroke-width="2" stroke-dasharray="50,10"/>
+            </svg>
+        </div>
+        <div class="gradient-sphere sphere-1"></div>
+        <div class="gradient-sphere sphere-2"></div>
+        <div class="hexagon-grid"></div>
+    </div>
+
+    <div class="container">
+        <!-- Section Header -->
+        <div class="section-header" data-aos="fade-up">
+            <span class="section-tag">How It Works</span>
+            <h2 class="section-title">
+                Secure Identity Verification
+                <span class="gradient-text">Made Simple</span>
+            </h2>
+            <p class="section-description">
+                Discover how our blockchain-based verification system revolutionizes
+                identity management with cutting-edge security and seamless integration.
+            </p>
+        </div>
+
+        <!-- Use Cases -->
+        <div class="use-cases">
+            <h3 class="subsection-title" data-aos="fade-up">Use Cases</h3>
+            <div class="use-cases-grid">
+                <div class="use-case-card" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="card-icon">
+                        <i class="ri-bank-line"></i>
+                    </div>
+                    <h4>Financial Services</h4>
+                    <p>Secure KYC verification for banking and financial institutions</p>
+                    <div class="card-hover-content">
+                        <ul>
+                            <li>Instant identity verification</li>
+                            <li>Fraud prevention</li>
+                            <li>Regulatory compliance</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="use-case-card" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="card-icon">
+                        <i class="ri-hospital-line"></i>
+                    </div>
+                    <h4>Healthcare</h4>
+                    <p>Secure patient identity verification and record management</p>
+                    <div class="card-hover-content">
+                        <ul>
+                            <li>Patient data protection</li>
+                            <li>Medical record access</li>
+                            <li>Insurance verification</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="use-case-card" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="card-icon">
+                        <i class="ri-government-line"></i>
+                    </div>
+                    <h4>Government Services</h4>
+                    <p>Digital identity verification for government services</p>
+                    <div class="card-hover-content">
+                        <ul>
+                            <li>Citizen services</li>
+                            <li>Document verification</li>
+                            <li>Public records</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow Steps -->
+        <div class="workflow-steps">
+            <h3 class="subsection-title" data-aos="fade-up">How It Works</h3>
+            <div class="steps-timeline">
+                <div class="step" data-aos="fade-right" data-aos-delay="100">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h4>Document Submission</h4>
+                        <p>Upload identity documents securely through our encrypted platform</p>
+                    </div>
+                </div>
+
+                <div class="step" data-aos="fade-right" data-aos-delay="200">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h4>AI Verification</h4>
+                        <p>Advanced AI algorithms verify document authenticity</p>
+                    </div>
+                </div>
+
+                <div class="step" data-aos="fade-right" data-aos-delay="300">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <h4>Blockchain Recording</h4>
+                        <p>Verification result is securely recorded on blockchain</p>
+                    </div>
+                </div>
+
+                <div class="step" data-aos="fade-right" data-aos-delay="400">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <h4>Digital Identity Creation</h4>
+                        <p>Verified digital identity is created and ready for use</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- JavaScript -->
 <script src="js/navbar.js"></script>
 <script src="js/main.js"></script>
+<script src="js/about.js"></script>
 </body>
 </html>

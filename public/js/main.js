@@ -72,3 +72,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Smooth scroll functionality
+    const learnMoreBtn = document.getElementById('learnMoreBtn');
+
+    learnMoreBtn.addEventListener('click', () => {
+        // Get the target section
+        const targetSection = document.getElementById('about');
+
+        // Add click animation to button
+        learnMoreBtn.classList.add('clicked');
+
+        // Smooth scroll to about section
+        targetSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+        // Optional: Add active state to button
+        setTimeout(() => {
+            learnMoreBtn.classList.remove('clicked');
+        }, 300);
+    });
+});
+
+// Add this to your main.js
+document.addEventListener('DOMContentLoaded', () => {
+    // Previous button click handler code...
+
+    // Scroll Progress Indicator
+    const progressIndicator = document.createElement('div');
+    progressIndicator.className = 'scroll-progress';
+    document.body.appendChild(progressIndicator);
+
+    window.addEventListener('scroll', () => {
+        const winScroll = document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        progressIndicator.style.width = scrolled + '%';
+    });
+});
