@@ -1,0 +1,373 @@
+:root {
+    /* Colors */
+    --bg-primary: #0a0b1e;
+    --bg-secondary: #12132d;
+    --primary: #6c63ff;
+    --secondary: #4d84ff;
+    --accent: #ff64b4;
+
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #8b8ca7;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #6c63ff 0%, #4d84ff 100%);
+    --gradient-accent: linear-gradient(135deg, #ff64b4 0%, #ff8a5c 100%);
+
+    /* Fonts */
+    --font-heading: 'Urbanist', sans-serif;
+    --font-body: 'Poppins', sans-serif;
+    --font-special: 'Montserrat', sans-serif;
+
+    /* Other */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 8px 12px -1px rgba(0, 0, 0, 0.2);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Main Section Styles */
+.main-section {
+    min-height: 100vh;
+    padding: 120px 0;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+}
+
+/* Background Elements */
+.background-elements {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+}
+
+.orb-1 {
+    top: -10%;
+    left: -10%;
+    width: 50vw;
+    height: 50vw;
+    background: rgba(108, 99, 255, 0.15);
+}
+
+.orb-2 {
+    bottom: -20%;
+    right: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: rgba(77, 132, 255, 0.12);
+}
+
+.orb-3 {
+    top: 40%;
+    right: 20%;
+    width: 30vw;
+    height: 30vw;
+    background: rgba(255, 100, 180, 0.1);
+}
+
+.grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+/* Content Layout */
+.container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+/* Badge Styles */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    margin-bottom: 2rem;
+}
+
+.badge i {
+    color: var(--primary);
+}
+
+.badge span {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Typography */
+.main-heading {
+    font-family: var(--font-heading);
+    font-size: 4.5rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    font-weight: 800;
+}
+
+.gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: block;
+}
+
+.outline-text {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    display: block;
+}
+
+.main-description {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    max-width: 540px;
+}
+
+/* Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 3.5rem;
+}
+
+.primary-btn,
+.secondary-btn {
+    font-family: var(--font-special);
+    font-weight: 600;
+    font-size: 1.125rem;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.primary-btn {
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    box-shadow: var(--shadow-md);
+}
+
+.secondary-btn {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Stats */
+.stats-container {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.stat-label {
+    font-family: var(--font-body);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Ethereum Container Styles */
+.content-right {
+    position: relative;
+}
+
+.ethereum-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.eth-coin {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    transform-style: preserve-3d;
+    animation: float 3s ease-in-out infinite;
+}
+
+.eth-front,
+.eth-middle,
+.eth-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eth-front {
+    transform: translateZ(10px);
+    background: linear-gradient(135deg, #6c63ff 0%, #4d84ff 100%);
+}
+
+.eth-middle {
+    transform: translateZ(0);
+    background: linear-gradient(135deg, #5750cc 0%, #3a63cc 100%);
+}
+
+.eth-back {
+    transform: translateZ(-10px);
+    background: linear-gradient(135deg, #423d99 0%, #2b4a99 100%);
+}
+
+.eth-logo {
+    width: 60%;
+    height: 60%;
+    fill: white;
+}
+
+.glow-effect {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    filter: blur(100px);
+    opacity: 0.2;
+    animation: pulse 4s ease-in-out infinite;
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .main-heading {
+        font-size: 3.5rem;
+    }
+
+    .ethereum-container {
+        width: 300px;
+        height: 300px;
+    }
+
+    .eth-coin {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 3rem;
+    }
+
+    .content-left {
+        order: 2;
+    }
+
+    .content-right {
+        order: 1;
+    }
+
+    .main-description {
+        margin: 0 auto 2.5rem;
+    }
+
+    .action-buttons {
+        justify-content: center;
+    }
+
+    .ethereum-container {
+        margin: 0 auto;
+    }
+
+    .badge {
+        margin: 0 auto 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-heading {
+        font-size: 2.5rem;
+    }
+
+    .main-description {
+        font-size: 1.1rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .stats-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .stat-divider {
+        display: none;
+    }
+
+    .ethereum-container {
+        width: 250px;
+        height: 250px;
+    }
+}
