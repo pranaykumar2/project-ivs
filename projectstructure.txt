@@ -1,0 +1,25 @@
+identity-verification-system/
+├── public/
+│   ├── css/
+│   │   ├── style.css
+│   │   ├── navbar.css
+│   │   ├── main.css
+│   │   ├── about.css
+│   │   ├── team.css
+│   │   └── contact.css
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── animations.js
+│   │   ├── ethereum3d.js
+│   │   └── form-handler.js
+│   ├── images/
+│   │   ├── logo.svg
+│   │   ├── ethereum.gltf
+│   │   └── team/
+│   └── models/
+├── views/
+│   ├── index.html
+│   └── signup.html
+├── server.js
+├── package.json
+└── README.md
