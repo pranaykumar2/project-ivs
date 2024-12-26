@@ -1,64 +1,65 @@
-// navbar.js
 document.addEventListener('DOMContentLoaded', () => {
+    // Cache DOM elements
+    const header = document.querySelector('.header-nav');
     const navbar = document.querySelector('.navbar');
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-    const navItems = document.querySelectorAll('.nav-item');
-    let mobileNav = null;
+    const mobileToggle = document.querySelector('.mobile-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
-    // Create mobile navigation
-    function createMobileNav() {
-        if (!mobileNav) {
-            mobileNav = document.createElement('div');
-            mobileNav.className = 'mobile-nav';
+    // Scroll and position tracking variables
+    let lastScroll = 0;
+    let isScrolling = false;
 
-            // Clone navigation links
-            const navLinks = document.querySelector('.nav-links').cloneNode(true);
+    // Scroll handler with throttling
+    function handleScroll() {
+        if (!isScrolling) {
+            window.requestAnimationFrame(() => {
+                const currentScroll = window.pageYOffset;
 
-            // Clone CTA button
-            const ctaButton = document.querySelector('.cta-button').cloneNode(true);
+                // Show/hide navbar based on scroll direction
+                if (currentScroll > lastScroll && currentScroll > 100) {
+                    header.classList.add('hide');
+                } else {
+                    header.classList.remove('hide');
+                }
 
-            // Add to mobile nav
-            mobileNav.appendChild(navLinks);
-            mobileNav.appendChild(ctaButton);
+                // Add shadow/background when scrolled
+                if (currentScroll > 50) {
+                    navbar.style.background = 'rgba(16, 20, 35, 0.98)';
+                } else {
+                    navbar.style.background = 'rgba(16, 20, 35, 0.95)';
+                }
 
-            // Add to body
-            document.body.appendChild(mobileNav);
-
-            // Add click events to mobile nav links
-            const mobileNavItems = mobileNav.querySelectorAll('.nav-item');
-            mobileNavItems.forEach(item => {
-                item.addEventListener('click', handleNavClick);
+                lastScroll = currentScroll;
+                isScrolling = false;
             });
         }
+        isScrolling = true;
     }
 
-    // Handle navigation click
-    function handleNavClick(e) {
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+        mobileToggle.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+    }
+
+    // Smooth scroll to section
+    function smoothScroll(e) {
         e.preventDefault();
-        const targetId = e.currentTarget.getAttribute('href');
+        const targetId = this.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
 
-        // Remove active class from all items
-        document.querySelectorAll('.nav-item').forEach(item =>
-            item.classList.remove('active')
-        );
+        if (targetSection) {
+            // Close mobile menu if open
+            if (mobileMenu.classList.contains('active')) {
+                toggleMobileMenu();
+            }
 
-        // Add active class to clicked item
-        e.currentTarget.classList.add('active');
-
-        // Scroll to section
-        scrollToSection(targetId);
-
-        // Close mobile menu
-        closeMobileMenu();
-    }
-
-    // Function to scroll to section
-    function scrollToSection(targetId) {
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
+            // Calculate scroll position
             const navHeight = navbar.offsetHeight;
-            const targetPosition = targetElement.offsetTop - navHeight - 20; // Added extra offset
+            const targetPosition = targetSection.offsetTop - navHeight;
 
             window.scrollTo({
                 top: targetPosition,
@@ -67,91 +68,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to close mobile menu
-    function closeMobileMenu() {
-        hamburger?.classList.remove('active');
-        mobileNav?.classList.remove('active');
-        document.body.style.overflow = '';
+    // Initialize navbar animation
+    function initializeNavbar() {
+        navbar.classList.add('animate-in');
+
+        // Remove animation class after completion
+        setTimeout(() => {
+            navbar.classList.remove('animate-in');
+        }, 500);
     }
 
-    // Initialize mobile navigation
-    createMobileNav();
+    // Event Listeners
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    mobileToggle.addEventListener('click', toggleMobileMenu);
 
-    // Toggle mobile menu
-    hamburger?.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        mobileNav?.classList.toggle('active');
-        document.body.style.overflow = mobileNav?.classList.contains('active') ? 'hidden' : '';
-    });
-
-    // Add click events to desktop nav items
-    navItems.forEach(item => {
-        item.addEventListener('click', handleNavClick);
-    });
-
-    // Update active section on scroll
-    function updateActiveSection() {
-        const sections = document.querySelectorAll('section[id]');
-        const navHeight = navbar.offsetHeight;
-
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop - navHeight - 100;
-            const sectionBottom = sectionTop + section.offsetHeight;
-            const scrollPosition = window.scrollY;
-
-            const sectionId = `#${section.id}`;
-            const navItems = document.querySelectorAll(`.nav-item[href="${sectionId}"]`);
-
-            if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-                document.querySelectorAll('.nav-item').forEach(item =>
-                    item.classList.remove('active')
-                );
-                navItems.forEach(item => item.classList.add('active'));
-            }
-        });
-    }
-
-    // Handle scroll events
-    let lastScroll = 0;
-    let scrollTimer = null;
-
-    window.addEventListener('scroll', () => {
-        const currentScroll = window.pageYOffset;
-
-        if (scrollTimer) clearTimeout(scrollTimer);
-        navbar.classList.add('is-scrolling');
-
-        if (currentScroll > lastScroll && currentScroll > 100) {
-            navbar.classList.add('navbar-hidden');
-            closeMobileMenu();
-        } else {
-            navbar.classList.remove('navbar-hidden');
-        }
-
-        lastScroll = currentScroll;
-        updateActiveSection();
-
-        scrollTimer = setTimeout(() => {
-            navbar.classList.remove('is-scrolling');
-        }, 150);
-    });
-
-    // Close mobile menu on window resize
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) {
-            closeMobileMenu();
-        }
-    });
+    // Add smooth scroll to all nav links
+    navLinks.forEach(link => link.addEventListener('click', smoothScroll));
+    mobileNavLinks.forEach(link => link.addEventListener('click', smoothScroll));
 
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
-        if (mobileNav?.classList.contains('active')) {
-            if (!mobileNav.contains(e.target) && !hamburger.contains(e.target)) {
-                closeMobileMenu();
-            }
+        if (mobileMenu.classList.contains('active') &&
+            !mobileMenu.contains(e.target) &&
+            !mobileToggle.contains(e.target)) {
+            toggleMobileMenu();
         }
     });
 
-    // Initialize active section
-    updateActiveSection();
+    // Initialize navbar
+    initializeNavbar();
+
+    // Cleanup function
+    function cleanup() {
+        window.removeEventListener('scroll', handleScroll);
+        mobileToggle.removeEventListener('click', toggleMobileMenu);
+        navLinks.forEach(link => link.removeEventListener('click', smoothScroll));
+        mobileNavLinks.forEach(link => link.removeEventListener('click', smoothScroll));
+    }
+
+    // Handle cleanup on page unload
+    window.addEventListener('unload', cleanup);
 });

@@ -1,301 +1,280 @@
+/* Reset and Base Styles */
 :root {
-    /* Modern Color Palette */
-    --bg-primary: #0a0f1c;
-    --nav-bg: linear-gradient(135deg, rgba(20, 24, 40, 0.98), rgba(16, 20, 35, 0.98));
-    --primary: #4f46e5;      /* Main Brand Color */
-    --primary-light: #6366f1; /* Lighter shade */
-    --secondary: #0ea5e9;    /* Secondary Brand Color */
-    --accent: #10b981;      /* Success/Accent Color */
-
-    /* Text Colors */
+    --nav-bg: rgba(16, 20, 35, 0.85);
+    --nav-border: rgba(255, 255, 255, 0.08);
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
     --text-primary: #f8fafc;
     --text-secondary: #cbd5e1;
-    --text-muted: #64748b;
-
-    /* Effects */
-    --nav-blur: 12px;
-    --nav-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    --nav-border: rgba(255, 255, 255, 0.04);
-
-    /* Button Gradients */
-    --btn-gradient: linear-gradient(135deg, #4f46e5, #0ea5e9);
-    --btn-gradient-hover: linear-gradient(135deg, #6366f1, #38bdf8);
-
-    /* Transitions */
-    --transition-fast: 0.2s ease;
-    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --nav-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-/* Global Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    min-height: 200vh; /* For scroll testing */
-}
-
-/* Navbar Styles */
-.navbar {
+/* Enhanced Floating Navbar Container */
+.header-nav {
     position: fixed;
     top: 1.5rem;
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 3rem);
     max-width: 1200px;
-    height: 72px;
-    background: var(--nav-bg);
-    backdrop-filter: blur(var(--nav-blur));
-    border-radius: 16px;
-    border: 1px solid var(--nav-border);
-    box-shadow: var(--nav-shadow);
     z-index: 1000;
-    transition: transform 0.3s ease;
+    transition: all 0.4s ease;
+}
+
+.header-nav.hide {
+    transform: translate(-50%, -100%);
+}
+
+.navbar {
+    position: relative;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--nav-border);
+    border-radius: 16px;
+    box-shadow: var(--nav-shadow);
 }
 
 .nav-container {
-    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 0 1.5rem;
+    height: 65px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-/* Logo Styles */
-.logo-wrapper {
+/* Enhanced Logo Styles */
+.nav-logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    text-decoration: none;
+    gap: 6px;
+    padding: 0.5rem;
+    transition: var(--transition);
 }
 
-.logo-icon {
-    width: 36px;
-    height: 36px;
-}
-
-.logo-icon path {
-    fill: var(--primary);
-    transition: var(--transition-normal);
-}
-
-.logo-icon path.inner {
-    fill: var(--secondary);
-    opacity: 0.8;
+.nav-logo:hover {
+    transform: translateY(-1px);
 }
 
 .logo-text {
+    color: var(--text-primary);
     font-size: 1.5rem;
     font-weight: 700;
-    background: var(--btn-gradient);
-    -webkit-background-clip: text;
-    color: transparent;
-    letter-spacing: 0.5px;
+    letter-spacing: -0.5px;
+}
+
+.logo-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    margin-top: 4px;
+    transition: var(--transition);
+}
+
+.nav-logo:hover .logo-dot {
+    transform: scale(1.2);
+    background: var(--primary-hover);
 }
 
 /* Navigation Links */
 .nav-links {
     display: flex;
-    gap: 1rem;
+    gap: 2.5rem;
 }
 
-.nav-item {
+.nav-link-wrapper {
     position: relative;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1.25rem;
+    overflow: hidden;
+}
+
+.nav-link {
     color: var(--text-secondary);
-    font-weight: 500;
     text-decoration: none;
-    border-radius: 12px;
-    transition: var(--transition-normal);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
-.nav-item i {
-    font-size: 1.25rem;
-    transition: var(--transition-normal);
-}
-
-.nav-item::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--btn-gradient);
-    border-radius: inherit;
-    opacity: 0;
-    transition: var(--transition-normal);
-}
-
-.nav-item span,
-.nav-item i {
+.nav-text {
     position: relative;
     z-index: 1;
+    transition: var(--transition);
 }
 
-.nav-item:hover,
-.nav-item.active {
+.nav-indicator {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-hover));
+    transition: var(--transition);
+    border-radius: 2px;
+    opacity: 0;
+}
+
+.nav-link:hover .nav-indicator {
+    width: 100%;
+    opacity: 1;
+    left: 0;
+    transform: translateX(0);
+}
+
+.nav-link:hover .nav-text {
     color: var(--text-primary);
-}
-
-.nav-item:hover::before,
-.nav-item.active::before {
-    opacity: 0.1;
-}
-
-.nav-item:hover i {
     transform: translateY(-2px);
-    color: var(--primary-light);
 }
 
-/* CTA Button */
+/* Enhanced CTA Button */
 .cta-button {
-    position: relative;
-    padding: 0.75rem 1.5rem;
-    background: var(--btn-gradient);
-    border-radius: 12px;
-    color: var(--text-primary);
-    font-weight: 600;
-    text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    transition: var(--transition-normal);
+    gap: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: var(--transition);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
 }
 
-.cta-button i {
-    font-size: 1.25rem;
-    transition: var(--transition-normal);
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+    transition: var(--transition);
+    opacity: 0;
 }
 
 .cta-button:hover {
-    background: var(--btn-gradient-hover);
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
 }
 
-.cta-button:hover i {
-    transform: translateX(4px);
-}
-
-/* Hamburger Menu */
-.hamburger {
-    display: none;
-    width: 48px;
-    height: 48px;
-    border: none;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    cursor: pointer;
-    position: relative;
-    border: 1px solid var(--nav-border);
-}
-
-.hamburger-lines {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-}
-
-.hamburger-lines span {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background: var(--text-primary);
-    border-radius: 4px;
-    transition: var(--transition-normal);
-}
-
-.hamburger.active .hamburger-lines span:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-    background: var(--primary-light);
-}
-
-.hamburger.active .hamburger-lines span:nth-child(2) {
-    opacity: 0;
-}
-
-.hamburger.active .hamburger-lines span:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-    background: var(--primary-light);
-}
-
-/* Mobile Navigation */
-/* Update/Add these styles in navbar.css */
-.mobile-nav {
-    position: fixed;
-    top: calc(72px + 2rem);
-    left: 1rem;
-    right: 1rem;
-    background: var(--nav-bg);
-    backdrop-filter: blur(var(--nav-blur));
-    border-radius: 16px;
-    padding: 1.5rem;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-1rem);
-    transition: var(--transition-normal);
-    border: 1px solid var(--nav-border);
-    box-shadow: var(--nav-shadow);
-    z-index: 1000; /* Ensure it's above other content */
-}
-
-.mobile-nav .nav-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    width: 100%;
-}
-
-.mobile-nav .nav-item {
-    width: 100%;
-    padding: 1rem;
-    justify-content: center;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.mobile-nav.active {
+.cta-button:hover::before {
     opacity: 1;
-    visibility: visible;
+}
+
+.cta-button:active {
     transform: translateY(0);
 }
 
-/* Ensure sections have IDs and proper spacing */
-section {
-    padding-top: 80px; /* Adjust based on your navbar height */
-    min-height: 100vh;
+/* Mobile Menu Button */
+.mobile-toggle {
+    display: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--nav-border);
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0.75rem;
+    gap: 6px;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.toggle-bar {
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    transition: var(--transition);
+    border-radius: 2px;
+}
+
+/* Mobile Navigation */
+.mobile-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 1rem);
+    left: 0;
+    right: 0;
+    background: var(--nav-bg);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--nav-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transform: translateY(-10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    box-shadow: var(--nav-shadow);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .navbar {
+    .header-nav {
         top: 1rem;
         width: calc(100% - 2rem);
     }
 
-    .nav-links,
-    .nav-actions .cta-button {
+    .nav-container {
+        padding: 0 1rem;
+        height: 60px;
+    }
+
+    .nav-links, .nav-cta {
         display: none;
     }
 
-    .hamburger {
+    .mobile-toggle {
         display: flex;
     }
-}
 
-/* Animation Classes */
-.navbar-hidden {
-    transform: translate(-50%, -100%);
-}
+    .mobile-menu {
+        display: block;
+    }
 
-/* Update/Add these styles in navbar.css */
+    .mobile-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .mobile-nav-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        padding: 0.875rem 1rem;
+        border-radius: 10px;
+        transition: var(--transition);
+        font-weight: 500;
+        display: block;
+    }
+
+    .mobile-nav-link:hover {
+        color: var(--text-primary);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .mobile-cta {
+        margin-top: 0.75rem;
+        background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+        color: var(--text-primary);
+        text-decoration: none;
+        padding: 0.875rem 1rem;
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 500;
+        transition: var(--transition);
+        display: block;
+    }
+}
