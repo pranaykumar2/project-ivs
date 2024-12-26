@@ -230,6 +230,7 @@ body {
 }
 
 /* Mobile Navigation */
+/* Update/Add these styles in navbar.css */
 .mobile-nav {
     position: fixed;
     top: calc(72px + 2rem);
@@ -245,6 +246,22 @@ body {
     transition: var(--transition-normal);
     border: 1px solid var(--nav-border);
     box-shadow: var(--nav-shadow);
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.mobile-nav .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.mobile-nav .nav-item {
+    width: 100%;
+    padding: 1rem;
+    justify-content: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .mobile-nav.active {
@@ -253,22 +270,10 @@ body {
     transform: translateY(0);
 }
 
-.mobile-nav .nav-links {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.mobile-nav .nav-item {
-    width: 100%;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.mobile-nav .cta-button {
-    width: 100%;
-    margin-top: 1.5rem;
-    justify-content: center;
+/* Ensure sections have IDs and proper spacing */
+section {
+    padding-top: 80px; /* Adjust based on your navbar height */
+    min-height: 100vh;
 }
 
 /* Responsive Design */
@@ -292,3 +297,5 @@ body {
 .navbar-hidden {
     transform: translate(-50%, -100%);
 }
+
+/* Update/Add these styles in navbar.css */
