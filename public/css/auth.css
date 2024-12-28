@@ -17,7 +17,7 @@
     --secondary: #FF4D8C;
 
     /* Gradient Colors */
-    --gradient-primary: linear-gradient(135deg, #7C4DFF 0%, #9c75ff 100%);
+    --gradient-primary: linear-gradient(135deg, #5627d8 0%, #5723da 100%);;
     --gradient-secondary: linear-gradient(135deg, #FF4D8C 0%, #FF6B6B 100%);
     --gradient-accent: linear-gradient(135deg, #7C4DFF 0%, #FF4D8C 100%);
 
@@ -438,6 +438,7 @@ body {
 
 /* Submit Button */
 .submit-btn {
+    font-family: 'Poppins';
     width: 100%;
     padding: 1rem;
     border: none;
