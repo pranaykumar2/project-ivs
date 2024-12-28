@@ -2,7 +2,6 @@
 
 <!-- Animated Project Logo -->
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="public/assets/logo-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="public/assets/logo.png">
   <img alt="IVS - Identity Verification System" src="public/assets/logo.png" width="280">
 </picture>
