@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IVS Authentication</title>
 
-
     <!-- Font Imports -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
@@ -17,15 +16,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/auth.css">
+    <!-- Web3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <!-- ethers.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js" integrity="sha512-V3xRGsQMQ8CG4l2gVN44TCDmNY5cdlxbSvejrgmWxcLKHft0Q3XQDbeuJ9aot14mpNuRWGtI//WKraedDGNZ+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <link rel="icon" type="image/png" href="assets/logo.png" >
+    <!-- In your HTML head -->
+    <!-- Web3 and Ethers -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+
+    <link rel="icon" type="image/png" href="assets/logo.png">
 </head>
 <body>
 <!-- Background Effects -->
 <div class="auth-background">
-    <div class="noise-overlay"></div>
     <div class="gradient-sphere"></div>
     <div class="gradient-sphere"></div>
 </div>
@@ -37,13 +46,12 @@
         <div class="logo-wrapper">
             <svg width="150" height="100.0592079321324" viewBox="0 0 140.5 34.812939547061525" class="looka-1j8o68f"><defs id="SvgjsDefs1130"></defs><g id="SvgjsG1131" featurekey="aMgJeN-0" transform="matrix(0.5296838303257697,0,0,0.5296838303257697,-8.691449833739657,-8.091449193888229)" fill="#6c63ff"><path xmlns="http://www.w3.org/2000/svg" d="M82.727,34.495l-9.245-16.013c-1.054-1.828-3.44-3.206-5.551-3.206H49.48c-1.293,0-2.345,0.536-2.885,1.471  c-0.54,0.935-0.479,2.114,0.167,3.234l2.629,4.561h-6.869c-2.11,0-4.496,1.378-5.551,3.205l-2.881,4.989l-2.174-3.771  c-1.849-3.206-1.849-3.206-2.735-3.206c-0.886,0-0.886,0-2.736,3.205L17.2,44.977c-1.055,1.827-1.055,4.583,0,6.41L26.446,67.4  c1.85,3.205,1.85,3.205,2.731,3.205c0.88,0,0.88,0,2.732-3.203l2.182-3.774l2.881,4.989c1.055,1.827,3.441,3.205,5.551,3.205h6.787  l-2.585,4.473c-0.647,1.12-0.709,2.299-0.17,3.233C47.094,80.464,48.146,81,49.439,81h18.46c2.11,0,4.497-1.378,5.551-3.205  l9.226-15.979c0.646-1.12,0.708-2.3,0.168-3.234c-0.539-0.936-1.591-1.472-2.884-1.473l-5.346-0.004l3.302-5.719  c1.055-1.827,1.055-4.582,0-6.41l-3.319-5.749l5.69,0.004c0.013,0,0.025,0,0.038,0c3.327,0,3.33-0.002,3.779-0.714l0.059-0.101  C84.558,37.668,84.558,37.668,82.727,34.495z M29.311,65.9c-0.045,0.078-0.089,0.155-0.134,0.231  c-0.044-0.076-0.088-0.153-0.134-0.231l-9.246-16.014c-0.515-0.892-0.515-2.517,0-3.41l9.246-16.013  c0.046-0.08,0.092-0.159,0.137-0.237c0.045,0.078,0.091,0.157,0.137,0.237l3.041,5.273l-5.335,9.241  c-1.055,1.827-1.055,4.583,0,6.409l5.336,9.241L29.311,65.9z M29.621,49.887c-0.515-0.892-0.515-2.517,0-3.409l4.468-7.739  l4.472,7.755c0.515,0.893,0.514,2.518-0.002,3.41l-4.467,7.727L29.621,49.887z M39.569,67.117l-3.746-6.487l5.333-9.225  c1.056-1.827,1.057-4.582,0.003-6.41l-5.337-9.258l3.748-6.491c0.042-0.073,0.099-0.144,0.151-0.215l11.051,19.167L39.716,67.324  C39.665,67.256,39.61,67.188,39.569,67.117z M79.958,60.109c0.087,0,0.157,0.007,0.213,0.016c-0.02,0.052-0.05,0.116-0.093,0.191  l-9.226,15.979C70.337,77.188,68.93,78,67.899,78h-18.46c-0.085,0-0.155-0.006-0.209-0.015c0.02-0.052,0.049-0.115,0.092-0.188  l3.454-5.975h9.642c2.11,0,4.497-1.378,5.551-3.205l4.915-8.513L79.958,60.109z M54.51,68.822l4.059-7.022  c0.515-0.892,1.923-1.703,2.954-1.703l7.897,0.006l-4.05,7.015c-0.516,0.893-1.923,1.705-2.953,1.705H54.51z M75.318,49.887  l-4.167,7.217l-9.63-0.007c-2.109,0-4.495,1.376-5.551,3.201l-4.928,8.524h-8.521c-0.063,0-0.131-0.012-0.196-0.018l11.043-19.104  l22.028,0.014C75.371,49.772,75.349,49.834,75.318,49.887z M75.318,46.477c0.042,0.073,0.075,0.157,0.11,0.238l-22.058-0.014  L42.334,27.559c0.062-0.005,0.128-0.017,0.188-0.017h8.599l4.884,8.47c1.054,1.828,3.439,3.207,5.549,3.208l9.578,0.006  L75.318,46.477z M54.584,27.542h7.833c1.03,0,2.438,0.812,2.953,1.705l4.029,6.979l-7.844-0.005c-1.03,0-2.438-0.814-2.952-1.707  L54.584,27.542z M72.864,36.228l-4.896-8.48c-1.054-1.828-3.44-3.206-5.551-3.206h-9.562l-3.494-6.059  c-0.043-0.075-0.073-0.139-0.093-0.191c0.055-0.009,0.125-0.015,0.212-0.015h18.451c1.03,0,2.438,0.812,2.953,1.705l9.245,16.013  c0.046,0.08,0.092,0.16,0.137,0.238L72.864,36.228z"></path></g><g id="SvgjsG1132" featurekey="8L6ael-0" transform="matrix(1.477374926869589,0,0,1.477374926869589,53.606652435309776,-0.377774326260929)" fill="#ffffff"><path d="M3.84 10.94 q0.3 0 0.5 0.21 t0.2 0.51 l0 7.48 q0 0.28 -0.2 0.49 t-0.5 0.21 l-1.52 0 q-0.28 0 -0.49 -0.21 t-0.21 -0.49 l0 -7.48 q0 -0.3 0.21 -0.51 t0.49 -0.21 l1.52 0 z M3.84 5 q0.3 0 0.5 0.21 t0.2 0.49 l0 3.7 q0 0.3 -0.2 0.51 t-0.5 0.21 l-1.52 0 q-0.28 0 -0.49 -0.21 t-0.21 -0.51 l0 -3.7 q0 -0.28 0.21 -0.49 t0.49 -0.21 l1.52 0 z M22.028 5.32 q0.22 0.3 0.08 0.66 l-5.48 13.54 q-0.08 0.2 -0.26 0.32 t-0.4 0.12 l-1.76 0 q-0.22 0 -0.4 -0.12 t-0.26 -0.32 l-5.48 -13.54 q-0.16 -0.34 0.06 -0.66 t0.58 -0.32 l6.68 0 q0.28 0 0.49 0.21 t0.21 0.51 l0 1.46 q0 0.3 -0.21 0.51 t-0.49 0.21 l-3.36 0 l3.06 7.7 l4.02 -10.16 q0.08 -0.2 0.26 -0.32 t0.4 -0.12 l1.68 0 q0.18 0 0.34 0.09 t0.24 0.23 z M35.396 12.42 q0.86 0.54 1.31 1.32 t0.45 1.74 q0 2.26 -1.72 3.46 q-1.16 0.84 -3.14 1.06 l-0.08 0 q-0.28 0 -0.46 -0.18 q-0.24 -0.22 -0.24 -0.52 l0 -1.44 q0 -0.26 0.18 -0.46 t0.44 -0.24 q0.94 -0.1 1.46 -0.44 q0.4 -0.24 0.54 -0.62 q0.08 -0.22 0.08 -0.56 q0 -0.22 -0.08 -0.38 t-0.28 -0.3 q-0.58 -0.4 -1.5 -0.68 l-0.32 -0.1 q-1 -0.28 -1.84 -0.46 q-0.18 -0.04 -0.58 -0.14 l-0.22 -0.06 q-0.72 -0.18 -1.52 -0.5 q-1.18 -0.5 -1.94 -1.26 q-0.88 -0.88 -0.88 -2.32 q0 -1.98 1.52 -3.22 q1.04 -0.88 2.92 -1.12 q0.32 -0.04 0.55 0.18 t0.23 0.52 l0 1.44 q0 0.26 -0.16 0.46 t-0.41 0.23 t-0.51 0.11 q-0.58 0.22 -0.82 0.43 t-0.34 0.43 q-0.1 0.34 -0.1 0.64 q0 0.16 0.18 0.34 q0.28 0.28 0.82 0.5 q0.24 0.1 0.84 0.3 l2.5 0.62 l0.12 0.04 q0.94 0.26 1.36 0.4 q0.94 0.32 1.64 0.78 z M32.056000000000004 7.9 q-0.24 -0.06 -0.39 -0.25 t-0.15 -0.45 l0 -1.46 q0 -0.32 0.26 -0.54 q0.1 -0.1 0.26 -0.13 t0.3 -0.01 q1.76 0.28 2.86 1.2 q1.5 1.24 1.6 3.16 q0.02 0.28 -0.19 0.51 t-0.51 0.23 l-1.56 0 q-0.26 0 -0.46 -0.18 t-0.22 -0.44 q-0.08 -0.52 -0.34 -0.86 q-0.42 -0.5 -1.3 -0.76 q-0.06 0 -0.08 -0.02 l-0.08 0 z M29.716 17.08 q0.24 0.04 0.4 0.24 t0.16 0.44 l0 1.48 q0 0.32 -0.24 0.54 q-0.2 0.16 -0.46 0.16 l-0.1 0 q-1.86 -0.28 -3.06 -1.22 q-1.56 -1.24 -1.76 -3.46 q-0.04 -0.32 0.18 -0.55 t0.52 -0.23 l1.58 0 q0.28 0 0.48 0.19 t0.22 0.47 q0.06 1 0.98 1.54 q0.42 0.24 1.1 0.4 z"></path></g></svg>
         </div>
-
     </div>
 
     <!-- Auth Card -->
     <div class="auth-card">
         <!-- Form Switcher -->
-        <div class="form-switcher" >
+        <div class="form-switcher">
             <button class="switch-btn active" data-form="login" aria-pressed="true" style="font-family: 'Poppins', sans-serif;">
                 <i class="ri-login-circle-line"></i>
                 Sign In
@@ -70,10 +78,7 @@
                         <i class="ri-mail-line input-icon"></i>
                         <label for="loginEmail" class="input-label">Email Address</label>
                     </div>
-                    <span class="error-message">
-                            <i class="ri-error-warning-line"></i>
-                            <span></span>
-                        </span>
+                    <span class="error-message"></span>
                 </div>
 
                 <div class="form-group">
@@ -97,7 +102,7 @@
                     <a href="#" class="forgot-password">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="submit-btn" style="font-family: 'Poppins', sans-serif;">
+                <button type="submit" class="submit-btn">
                     <span>Sign In</span>
                 </button>
             </form>
@@ -136,17 +141,6 @@
                             <i class="ri-eye-line"></i>
                         </button>
                     </div>
-                    <div class="password-strength">
-                        <div class="strength-bar">
-                            <div class="strength-fill"></div>
-                        </div>
-                        <div class="strength-bar">
-                            <div class="strength-fill"></div>
-                        </div>
-                        <div class="strength-bar">
-                            <div class="strength-fill"></div>
-                        </div>
-                    </div>
                     <span class="error-message"></span>
                 </div>
 
@@ -168,6 +162,10 @@
         <!-- Social Authentication -->
         <div class="social-auth">
             <div class="divider">or continue with</div>
+            <button type="button" class="web3-login-button" id="web3LoginBtn">
+                <i class="ri-wallet-3-line"></i>
+                <span>Connect Wallet</span>
+            </button>
             <div class="social-buttons">
                 <button type="button" class="social-btn" aria-label="Continue with Google">
                     <i class="ri-google-fill"></i>
@@ -193,6 +191,52 @@
         <p>Your account has been created successfully.</p>
     </div>
 </div>
+
+<!-- Web3 Modal -->
+<div class="web3-modal" id="web3Modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Connect Wallet</h3>
+            <button class="close-modal" id="closeWeb3Modal">
+                <i class="ri-close-line"></i>
+            </button>
+        </div>
+        <div class="wallet-options">
+            <button class="wallet-option" data-wallet="metamask">
+                <img src="assets/metamask.svg" alt="MetaMask">
+                <span>MetaMask</span>
+            </button>
+            <button class="wallet-option" data-wallet="walletconnect">
+                <img src="assets/walletconnect.svg" alt="WalletConnect">
+                <span>WalletConnect</span>
+            </button>
+            <button class="wallet-option" data-wallet="coinbase">
+                <img src="assets/coinbase.svg" alt="Coinbase Wallet">
+                <span>Coinbase Wallet</span>
+            </button>
+        </div>
+        <div class="wallet-status" style="display: none;">
+            <div class="status-icon">
+                <i class="ri-loader-4-line"></i>
+            </div>
+            <p class="status-message">Connecting to wallet...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="success-modal">
+    <div class="modal-content">
+        <div class="success-icon">
+            <i class="ri-checkbox-circle-line"></i>
+        </div>
+        <h3>Welcome Aboard!</h3>
+        <p>Your account has been created successfully.</p>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
 
 <!-- Scripts -->
 <script src="js/auth.js"></script>
