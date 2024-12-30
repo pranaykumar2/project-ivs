@@ -1038,6 +1038,7 @@ body {
 }
 
 .wallet-option {
+    font-family: 'Poppins';
     display: flex;
     align-items: center;
     gap: 1rem;
