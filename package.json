@@ -24,6 +24,7 @@
     "scrollmagic": "^2.0.8",
     "split-type": "^0.3.4",
     "vanilla-tilt": "^1.8.1",
+    "helmet": "^8.0.0",
     "vite": "^6.0.5"
   },
   "devDependencies": {
