@@ -520,19 +520,6 @@ class AuthController {
         const submitBtn = form.querySelector('.submit-btn');
 
         try {
-            // Validate all inputs before submission
-            let isValid = true;
-            form.querySelectorAll('.input-field').forEach(input => {
-                if (!this.validateInput({ target: input })) {
-                    isValid = false;
-                }
-            });
-
-            if (!isValid) {
-                this.showToast('Please fix the form errors before submitting', 'error');
-                return;
-            }
-
             // Show loading state
             if (submitBtn) {
                 submitBtn.disabled = true;
@@ -550,27 +537,44 @@ class AuthController {
                 body: JSON.stringify(data)
             });
 
-            const result = await response.json();
+            // Log the raw response for debugging
+            console.log('Response status:', response.status);
+            const responseText = await response.text();
+            console.log('Response text:', responseText);
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (error) {
+                console.error('JSON parse error:', error);
+                throw new Error('Invalid server response');
+            }
 
             if (!response.ok) {
                 throw new Error(result.message || 'Operation failed');
             }
 
             if (formType === 'register') {
-                // First show the success modal
-                this.showSuccessModal();
-                // Then show the toast message
-                /*setTimeout(() => {
-                    this.showToast('Registration successful! Please check your email for verification.', 'success');
-                }, 3300);*/ // Show toast after modal starts to fade
+                // Show success modal
+                const successModal = document.querySelector('.success-modal');
+                if (successModal) {
+                    successModal.classList.add('active');
+                    setTimeout(() => {
+                        successModal.classList.remove('active');
+                        setTimeout(() => this.switchForm('login'), 300);
+                    }, 3000);
+                }
+                this.showToast('Registration successful! Please check your email for verification.', 'success');
             } else {
-                localStorage.setItem('token', result.token);
-                localStorage.setItem('user', JSON.stringify(result.user));
+                // Handle login
+                localStorage.setItem('token', result.data.token);
+                localStorage.setItem('user', JSON.stringify(result.data.user));
                 this.showToast('Login successful!', 'success');
                 window.location.href = '/dashboard';
             }
 
         } catch (error) {
+            console.error('Form submission error:', error);
             this.showToast(error.message || 'An error occurred', 'error');
         } finally {
             if (submitBtn) {

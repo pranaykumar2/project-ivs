@@ -160,12 +160,28 @@ app.use('*', (req, res) => {
  */
 
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('Error details:', {
+        message: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method,
+        body: req.body
+    });
+
     res.status(err.status || 500).json({
         status: 'error',
-        message: err.message || 'Internal Server Error',
-        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+        message: err.message || 'Internal Server Error'
     });
+});
+
+// Add request logging
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`, {
+        body: req.body,
+        query: req.query,
+        headers: req.headers
+    });
+    next();
 });
 
 /**

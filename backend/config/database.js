@@ -10,25 +10,17 @@ const pool = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
-});
-
-const promisePool = pool.promise();
+}).promise();
 
 /**
  * Test database connection
   */
 
-async function testConnection() {
-    try {
-        const [rows] = await promisePool.query('SELECT 1');
-        console.log('Database connection successful');
-    } catch (error) {
-        console.error('Database connection failed:', error);
-        process.exit(1);
-    }
-}
-
-module.exports = {
-    pool: promisePool,
-    testConnection
-};
+pool.getConnection()
+    .then(connection => {
+        console.log('Database connected successfully');
+        connection.release();
+    })
+    .catch(err => {
+        console.error('Database connection failed:', err);
+    });
