@@ -15,7 +15,9 @@ class AuthController {
 
             const { email, password, full_name } = req.body;
 
-            // Check if user already exists
+            /**
+             *Check if user already exists
+             */
             const [existingUser] = await connection.query(
                 'SELECT id FROM users WHERE email = ?',
                 [email]
@@ -28,14 +30,20 @@ class AuthController {
                 });
             }
 
-            // Hash password
+            /**
+             *Hash password
+             */
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
 
-            // Generate verification token
+            /**
+             *Generate verification token
+             */
             const verificationToken = uuidv4();
 
-            // Create user
+            /**
+             *Create user
+             */
             const userId = uuidv4();
             await connection.query(
                 'INSERT INTO users (id, email, password, full_name, verification_token) VALUES (?, ?, ?, ?, ?)',
@@ -76,7 +84,9 @@ class AuthController {
         try {
             const { email, password } = req.body;
 
-            // Get user
+            /**
+             *Get user
+             */
             const [users] = await pool.query(
                 'SELECT * FROM users WHERE email = ?',
                 [email]
@@ -91,7 +101,9 @@ class AuthController {
 
             const user = users[0];
 
-            // Check password
+            /**
+             *Check password
+             */
             const isValidPassword = await bcrypt.compare(password, user.password);
             if (!isValidPassword) {
                 return res.status(401).json({
@@ -100,7 +112,9 @@ class AuthController {
                 });
             }
 
-            // Check if email is verified
+            /**
+             *Check if email is verified
+             */
             if (!user.email_verified) {
                 return res.status(401).json({
                     status: 'error',
@@ -108,18 +122,24 @@ class AuthController {
                 });
             }
 
-            // Generate token
+            /**
+             *Generate token
+             */
             const token = jwt.sign(
                 { userId: user.id },
                 process.env.JWT_SECRET,
                 { expiresIn: process.env.JWT_EXPIRES_IN }
             );
 
-            // Calculate token expiration
+            /**
+             *Calculate token expiration
+             */
             const expiresAt = new Date();
             expiresAt.setHours(expiresAt.getHours() + 24); // 24 hours from now
 
-            // Store session
+            /**
+             *Store session
+             */
             await pool.query(
                 'INSERT INTO sessions (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)',
                 [uuidv4(), user.id, token, expiresAt]
@@ -146,8 +166,10 @@ class AuthController {
         }
     }
 
-    // Add these methods to the existing AuthController class
 
+    /**
+     * Verify email
+     */
     async verifyEmail(req, res) {
         try {
             const { token } = req.query;
@@ -208,7 +230,9 @@ class AuthController {
                 });
             }
 
-            // Generate new verification token
+            /**
+             *Generate new verification token
+             */
             const verificationToken = uuidv4();
 
             // Update user's verification token
@@ -217,7 +241,9 @@ class AuthController {
                 [verificationToken, users[0].id]
             );
 
-            // Send new verification email
+            /**
+             *Send new verification email
+             */
             await sendVerificationEmail(email, verificationToken);
 
             res.status(200).json({
@@ -260,6 +286,9 @@ class AuthController {
         }
     }
 
+    /**
+     * Forgot password
+     */
     async forgotPassword(req, res) {
         try {
             const { email } = req.body;
@@ -309,6 +338,9 @@ class AuthController {
         }
     }
 
+    /**
+     * Reset password
+     */
     async resetPassword(req, res) {
         try {
             const { token, password } = req.body;

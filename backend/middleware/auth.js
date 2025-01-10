@@ -14,7 +14,9 @@ const verifyToken = async (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Check if token exists in sessions table
+        /**
+         *Check if token exists in sessions table
+         */
         const [session] = await pool.query(
             'SELECT * FROM sessions WHERE token = ? AND expires_at > NOW()',
             [token]
@@ -27,7 +29,9 @@ const verifyToken = async (req, res, next) => {
             });
         }
 
-        // Get user details
+        /**
+         *Get user details
+         */
         const [user] = await pool.query(
             'SELECT id, email, full_name, email_verified, wallet_address FROM users WHERE id = ?',
             [decoded.userId]
