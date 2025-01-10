@@ -14,7 +14,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files from the public directory
+// Serve static files from the frontend directory
 app.use(express.static('public'));
 
 // Routes
