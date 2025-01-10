@@ -6,6 +6,7 @@ const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { testConnection } = require('./backend/config/database');
+const { cleanupExpiredSessions } = require('./backend/utils/sessionCleanup');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -199,6 +200,12 @@ process.on('unhandledRejection', (err) => {
     console.error('Unhandled Rejection:', err);
     process.exit(1);
 });
+
+/**
+ * Cleanup expired sessions
+ */
+cleanupExpiredSessions().then(r => console.log('Expired sessions cleanup completed'));
+
 
 /**
  * Start the server
