@@ -14,18 +14,20 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Custom CSS -->
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/auth.css">
-    <!-- Web3.js -->
+
+    <!-- Web3.js && ethers.js  -->
     <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
-    <!-- ethers.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.4/ethers.umd.min.js" integrity="sha512-V3xRGsQMQ8CG4l2gVN44TCDmNY5cdlxbSvejrgmWxcLKHft0Q3XQDbeuJ9aot14mpNuRWGtI//WKraedDGNZ+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <!-- In your HTML head -->
     <!-- Web3 and Ethers -->
     <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
@@ -33,6 +35,7 @@
     <link rel="icon" type="image/png" href="assets/logo.png">
 </head>
 <body>
+
 <!-- Background Effects -->
 <div class="auth-background">
     <div class="gradient-sphere"></div>
@@ -74,7 +77,7 @@
 
                 <div class="form-group">
                     <div class="input-wrapper">
-                        <input type="email" class="input-field" id="loginEmail" placeholder=" ">
+                        <input type="email" name="email" class="input-field" id="loginEmail" placeholder=" ">
                         <i class="ri-mail-line input-icon"></i>
                         <label for="loginEmail" class="input-label">Email Address</label>
                     </div>
@@ -83,7 +86,7 @@
 
                 <div class="form-group">
                     <div class="input-wrapper">
-                        <input type="password" class="input-field" id="loginPassword" placeholder=" ">
+                        <input type="password" name="password" class="input-field" id="loginPassword" placeholder=" ">
                         <i class="ri-lock-line input-icon"></i>
                         <label for="loginPassword" class="input-label">Password</label>
                         <button type="button" class="password-toggle">
@@ -116,7 +119,7 @@
 
                 <div class="form-group">
                     <div class="input-wrapper">
-                        <input type="text" class="input-field" id="registerName" placeholder=" ">
+                        <input type="text" class="input-field" id="registerName" name="full_name" placeholder=" ">
                         <i class="ri-user-line input-icon"></i>
                         <label for="registerName" class="input-label">Full Name</label>
                     </div>
@@ -125,7 +128,7 @@
 
                 <div class="form-group">
                     <div class="input-wrapper">
-                        <input type="email" class="input-field" id="registerEmail" placeholder=" ">
+                        <input type="email" name="email" class="input-field" id="registerEmail" placeholder=" ">
                         <i class="ri-mail-line input-icon"></i>
                         <label for="registerEmail" class="input-label">Email Address</label>
                     </div>
@@ -134,7 +137,7 @@
 
                 <div class="form-group">
                     <div class="input-wrapper">
-                        <input type="password" class="input-field" id="registerPassword" placeholder=" ">
+                        <input type="password" name="password" class="input-field" id="registerPassword" placeholder=" ">
                         <i class="ri-lock-line input-icon"></i>
                         <label for="registerPassword" class="input-label">Password</label>
                         <button type="button" class="password-toggle">
@@ -148,7 +151,7 @@
                     <label class="checkbox-wrapper">
                         <input type="checkbox" class="checkbox-input" id="termsAccept">
                         <span class="checkbox-box"></span>
-                        <span class="checkbox-label">I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a></span>
+                        <span class="checkbox-label">I agree to the <a href="#" style="color: #7c4dff">Terms</a> and <a href="#" style="color: #7c4dff">Privacy Policy</a></span>
                     </label>
                     <span class="error-message"></span>
                 </div>
@@ -159,7 +162,7 @@
             </form>
         </div>
 
-        <!-- Social Authentication -->
+        <!-- Social Login -->
         <div class="social-auth">
             <div class="divider">or continue with</div>
             <button type="button" class="web3-login-button" id="web3LoginBtn">
@@ -178,17 +181,6 @@
                 </button>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Success Modal -->
-<div class="success-modal">
-    <div class="modal-content">
-        <div class="success-icon">
-            <i class="ri-checkbox-circle-line"></i>
-        </div>
-        <h3>Welcome Aboard!</h3>
-        <p>Your account has been created successfully.</p>
     </div>
 </div>
 
@@ -231,7 +223,7 @@
             <i class="ri-checkbox-circle-line"></i>
         </div>
         <h3>Welcome Aboard!</h3>
-        <p>Your account has been created successfully.</p>
+        <p>Please check your email for verification.</p>
     </div>
 </div>
 
