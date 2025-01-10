@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <h2>Welcome to IVS Platform!</h2>
+    <p>Hello,</p>
+    <p>Thank you for registering with IVS. Please verify your email address by clicking the button below:</p>
+    <p>
+        <a href="{{verificationLink}}" class="button">Verify Email Address</a>
+    </p>
+    <p>If the button doesn't work, copy and paste this link into your browser:</p>
+    <p>{{verificationLink}}</p>
+    <p>This link will expire in 24 hours.</p>
+    <p>If you didn't create an account with IVS, please ignore this email.</p>
+</div>
+</body>
+</html>
