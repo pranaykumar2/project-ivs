@@ -156,7 +156,7 @@ app.use('*', (req, res) => {
 });
 
 /**
- *Error handling middleware
+ *Error handling middlewares
  */
 
 app.use((err, req, res, next) => {
