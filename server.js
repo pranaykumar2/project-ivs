@@ -1,89 +1,316 @@
-const express = require('express');
-const app = express();
+require('dotenv').config();
+const fastify = require('fastify')({
+    logger: true,
+    trustProxy: true,
+    ignoreTrailingSlash: true
+});
 const path = require('path');
-const cors = require('cors');
-const helmet = require('helmet');
-const bodyParser = require('body-parser');
-const mysql = require('mysql2/promise');
+const mongoose = require('mongoose');
 
-// Middleware
-app.use(cors());
-app.use(helmet({
-    contentSecurityPolicy: false // You might need to adjust this based on your needs
-}));
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'frontend')));
+/**
+ * CORS Configuration
+ */
 
-// Database connection for serverless environment
-const getConnection = async () => {
-    try {
-        const connection = await mysql.createConnection({
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-            ssl: {
-                rejectUnauthorized: true
+fastify.register(require('@fastify/cors'), {
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:9002',
+        'https://*.vercel.app',
+        'https://api.ivs-testing.vercel.app'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+});
+
+/**
+ * Helmet Configuration for Security Headers
+ */
+
+fastify.register(require('@fastify/helmet'), {
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                "'unsafe-eval'",
+                "cdnjs.cloudflare.com",
+                "cdn.jsdelivr.net",
+                "unpkg.com",
+                "https://cdn.ethers.io",
+                "https://api.ivs-testing.vercel.app"
+            ],
+            styleSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                "fonts.googleapis.com",
+                "cdn.jsdelivr.net",
+                "unpkg.com",
+                "cdnjs.cloudflare.com",
+                "https://unpkg.com/@phosphor-icons/web@2.0.3"
+            ],
+            fontSrc: [
+                "'self'",
+                "fonts.gstatic.com",
+                "cdn.jsdelivr.net",
+                "cdnjs.cloudflare.com",
+                "https://unpkg.com/@phosphor-icons",
+                "https://unpkg.com"
+            ],
+            imgSrc: [
+                "'self'",
+                "data:",
+                "i.ibb.co",
+                "unpkg.com",
+                "blob:",
+                "https://api.ivs-testing.vercel.app"
+            ],
+            connectSrc: [
+                "'self'",
+                "api.etherscan.io",
+                "unpkg.com",
+                "cdn.jsdelivr.net",
+                "cdnjs.cloudflare.com",
+                "https://*.mongodb.net",
+                "https://api.ivs-testing.vercel.app",
+                "wss://api.ivs-testing.vercel.app",
+                "https://unpkg.com/@phosphor-icons",
+                process.env.NODE_ENV === 'development' ? "http://localhost:3000" : null,
+                "https://project-ivs.vercel.app"
+            ].filter(Boolean),
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: []
+        }
+    },
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: { policy: "same-origin" }
+});
+
+/**
+ * Static file serving
+ */
+
+fastify.register(require('@fastify/static'), {
+    root: path.join(__dirname, 'public'),
+    prefix: '/'
+});
+
+/**
+ * Form body parser
+  */
+
+fastify.register(require('@fastify/formbody'));
+
+/**
+ * Security headers middleware
+  */
+
+fastify.addHook('onRequest', (request, reply, done) => {
+    reply.headers({
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'SAMEORIGIN',
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+        'X-XSS-Protection': '1; mode=block',
+        'Referrer-Policy': 'strict-origin-when-cross-origin'
+    });
+    done();
+});
+
+/**
+ * MongoDB connection with retry logic
+ */
+
+const connectDB = async () => {
+    const MAX_RETRIES = 3;
+    let currentRetry = 0;
+
+    while (currentRetry < MAX_RETRIES) {
+        try {
+            await mongoose.connect(process.env.MONGODB_URI, {
+                serverSelectionTimeoutMS: 5000,
+                socketTimeoutMS: 45000,
+            });
+            console.log('Connected to MongoDB');
+            return true;
+        } catch (err) {
+            currentRetry++;
+            console.error(`MongoDB connection attempt ${currentRetry} failed:`, err);
+            if (currentRetry === MAX_RETRIES) {
+                if (!process.env.VERCEL) {
+                    process.exit(1);
+                }
+                return false;
             }
-        });
-        return connection;
-    } catch (error) {
-        console.error('Database connection error:', error);
-        throw error;
+            await new Promise(resolve => setTimeout(resolve, 3000));
+        }
     }
 };
 
-// Make database connection available to routes
-app.use(async (req, res, next) => {
-    try {
-        req.db = await getConnection();
-        next();
-    } catch (error) {
-        console.error('Database middleware error:', error);
-        res.status(500).json({
+/**
+ *MongoDB connection event handlers
+ */
+
+mongoose.connection.on('error', (err) => {
+    console.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+    console.log('MongoDB disconnected');
+});
+
+mongoose.connection.on('reconnected', () => {
+    console.log('MongoDB reconnected');
+});
+
+/**
+ * Health check endpoint
+ */
+
+fastify.get('/api/health', async (request, reply) => {
+    return {
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    };
+});
+
+/**
+ * Register routes
+ */
+
+fastify.register(require('./backend/routes/authRoutes'), { prefix: '/api/auth' });
+fastify.register(require('./backend/routes/userRoutes'), { prefix: '/api/user' });
+
+/**
+ * Serve static files for frontend routes
+ */
+fastify.get('/', async (request, reply) => {
+    return reply.sendFile('index.html');
+});
+
+fastify.get('/auth', async (request, reply) => {
+    return reply.sendFile('auth.html');
+});
+
+
+
+/**
+ * API Error Handler
+ */
+fastify.setErrorHandler(function (error, request, reply) {
+    this.log.error(error);
+
+    /**
+     * Handle MongoDB errors
+     */
+
+    if (error.name === 'MongoError' || error.name === 'MongooseError') {
+        return reply.status(500).send({
             status: 'error',
-            message: 'Database connection failed'
+            message: 'Database error occurred',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal Server Error'
         });
+    }
+
+    /**
+     * Handle validation errors
+     */
+    if (error.validation) {
+        return reply.status(400).send({
+            status: 'error',
+            message: 'Validation failed',
+            errors: error.validation
+        });
+    }
+
+    /**
+     * Default error response
+     */
+    reply.status(error.statusCode || 500).send({
+        status: 'error',
+        message: error.message || 'Internal Server Error',
+        ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
+    });
+});
+
+/**
+ * Catch-all route for SPA
+ */
+
+fastify.setNotFoundHandler((request, reply) => {
+    if (request.url.startsWith('/api/')) {
+        reply.code(404).send({
+            status: 'error',
+            message: 'API endpoint not found'
+        });
+    } else {
+        reply.sendFile('index.html');
     }
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error('Error:', err);
-    res.status(err.status || 500).json({
-        status: 'error',
-        message: err.message || 'Internal Server Error'
-    });
-});
+/**
+ * Graceful shutdown handler
+ */
 
-// Routes
-const authRoutes = require('./backend/routes/authRoutes');
-app.use('/api/auth', authRoutes);
+const closeGracefully = async (signal) => {
+    console.log(`Received signal to terminate: ${signal}`);
 
-// Frontend routes
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
-});
+    // Close MongoDB connection
+    try {
+        await mongoose.connection.close();
+        console.log('MongoDB connection closed');
+    } catch (err) {
+        console.error('Error closing MongoDB connection:', err);
+    }
 
-app.get('/auth', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'auth.html'));
-});
+    // Close Fastify server
+    try {
+        await fastify.close();
+        console.log('Fastify server closed');
+    } catch (err) {
+        console.error('Error closing Fastify server:', err);
+    }
 
-// Handle 404
-app.use('*', (req, res) => {
-    res.status(404).json({
-        status: 'error',
-        message: 'Route not found'
-    });
-});
+    process.exit(0);
+};
 
-// Export for serverless use
-module.exports = app;
+process.on('SIGINT', closeGracefully);
+process.on('SIGTERM', closeGracefully);
 
-// Only listen when running locally
-if (process.env.NODE_ENV !== 'production') {
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
+// Server startup
+const start = async () => {
+    try {
+        await connectDB();
+
+        if (!process.env.VERCEL) {
+            await fastify.listen({
+                port: process.env.PORT || 3000,
+                host: '0.0.0.0'
+            });
+            console.log(`Server running on port ${process.env.PORT || 3000}`);
+        }
+    } catch (err) {
+        fastify.log.error(err);
+        process.exit(1);
+    }
+};
+
+/**
+ * Start server if not in Vercel environment
+ */
+
+if (!process.env.VERCEL) {
+    start();
 }
+
+/**
+ * Export for Vercel
+ */
+
+module.exports = async (req, res) => {
+    await fastify.ready();
+    fastify.server.emit('request', req, res);
+};
+
