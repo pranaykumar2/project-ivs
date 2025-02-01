@@ -16,7 +16,7 @@ fastify.register(require('@fastify/cors'), {
         'http://localhost:3000',
         'http://localhost:9002',
         'https://project-ivs.vercel.app',
-        'https://api.ivs-testing.vercel.app'
+        'https://api.project-ivs.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -39,7 +39,7 @@ fastify.register(require('@fastify/helmet'), {
                 "cdn.jsdelivr.net",
                 "unpkg.com",
                 "https://cdn.ethers.io",
-                "https://api.ivs-testing.vercel.app"
+                "https://api.project-ivs.vercel.app"
             ],
             styleSrc: [
                 "'self'",
@@ -64,7 +64,7 @@ fastify.register(require('@fastify/helmet'), {
                 "i.ibb.co",
                 "unpkg.com",
                 "blob:",
-                "https://api.ivs-testing.vercel.app"
+                "https://api.project-ivs.vercel.app"
             ],
             connectSrc: [
                 "'self'",
@@ -73,7 +73,7 @@ fastify.register(require('@fastify/helmet'), {
                 "cdn.jsdelivr.net",
                 "cdnjs.cloudflare.com",
                 "https://*.mongodb.net",
-                "https://api.ivs-testing.vercel.app",
+                "https://api.project-ivs.vercel.app",
                 "wss://api.ivs-testing.vercel.app",
                 "https://unpkg.com/@phosphor-icons",
                 process.env.NODE_ENV === 'development' ? "http://localhost:3000" : null,
