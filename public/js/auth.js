@@ -548,7 +548,7 @@ class AuthController {
     // Real API Call
     // public/js/auth.js
     async simulateApiCall(type, data) {
-        const endpoint = type === 'login' ? '/api/auth/login' : '/api/auth/register';
+        const endpoint = type === 'login' ? '/api/login' : '/api/register';
 
         try {
             console.log(`Making ${type} request to ${endpoint}`);
