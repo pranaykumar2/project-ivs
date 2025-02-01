@@ -184,7 +184,7 @@ fastify.register(require('./backend/routes/authRoutes'), { prefix: '/api/auth' }
 fastify.register(require('./backend/routes/userRoutes'), { prefix: '/api/user' });
 
 /**
- * Serve static files for frontend routes
+ * Serve static files for public routes
  */
 fastify.get('/', async (request, reply) => {
     return reply.sendFile('index.html');

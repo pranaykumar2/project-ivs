@@ -2,8 +2,8 @@
 
 <!-- Animated Project Logo -->
 <picture>
-  <source media="(prefers-color-scheme: light)" srcset="frontend/assets/logo.png">
-  <img alt="IVS - Identity Verification System" src="frontend/assets/logo.png" width="280">
+  <source media="(prefers-color-scheme: light)" srcset="public/assets/logo.png">
+  <img alt="IVS - Identity Verification System" src="public/assets/logo.png" width="280">
 </picture>
 
 <!-- Dynamic Badges -->
