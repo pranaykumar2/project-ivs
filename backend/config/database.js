@@ -1,26 +1,24 @@
-const mysql = require('mysql2');
-require('dotenv').config();
+const mongoose = require('mongoose');
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-}).promise();
+const dbConfig = {
+    init: () => {
+        mongoose.set('strictQuery', true);
 
-/**
- * Test database connection
-  */
+        process.on('SIGINT', async () => {
+            try {
+                await mongoose.connection.close();
+                console.log('MongoDB connection closed through app termination');
+                process.exit(0);
+            } catch (err) {
+                console.error('Error closing MongoDB connection:', err);
+                process.exit(1);
+            }
+        });
+    },
 
-pool.getConnection()
-    .then(connection => {
-        console.log('Database connected successfully');
-        connection.release();
-    })
-    .catch(err => {
-        console.error('Database connection failed:', err);
-    });
+    isConnected: () => {
+        return mongoose.connection.readyState === 1;
+    }
+};
+
+module.exports = dbConfig;
