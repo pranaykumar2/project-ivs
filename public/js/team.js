@@ -1,16 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize AOS
     AOS.init({
         duration: 1000,
         once: true,
         offset: 100
     });
 
-    // Card Interaction Effects
     const cards = document.querySelectorAll('.card-wrapper');
 
     cards.forEach(card => {
-        // Mouse move parallax effect
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -19,11 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
 
-            // Calculate rotation and movement
             const rotateX = ((y - centerY) / centerY) * 10;
             const rotateY = ((centerX - x) / centerX) * 10;
 
-            // Apply transform with smooth transition
             card.style.transform = `
                 perspective(1000px)
                 rotateX(${rotateX}deg)
@@ -31,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 scale3d(1.02, 1.02, 1.02)
             `;
 
-            // Dynamic shadow effect
             const shadowX = (x - centerX) / 10;
             const shadowY = (y - centerY) / 10;
             card.style.boxShadow = `
@@ -39,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 inset ${-shadowX}px ${-shadowY}px 30px rgba(255, 255, 255, 0.05)
             `;
 
-            // Glow effect following cursor
             const profileGlow = card.querySelector('.profile-glow');
             if (profileGlow) {
                 profileGlow.style.background = `
@@ -52,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Reset card on mouse leave
         card.addEventListener('mouseleave', () => {
             card.style.transform = '';
             card.style.boxShadow = '';
@@ -63,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Skill Tags Animation
     const skillTags = document.querySelectorAll('.skill-tag');
     skillTags.forEach(tag => {
         tag.addEventListener('mouseenter', () => {
@@ -79,32 +70,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Action Buttons Effects
     const actionButtons = document.querySelectorAll('.action-btn');
     actionButtons.forEach(btn => {
         btn.addEventListener('mouseenter', () => {
-            // Create ripple effect
             const ripple = document.createElement('span');
             ripple.className = 'btn-ripple';
             btn.appendChild(ripple);
 
-            // Position the ripple
             const rect = btn.getBoundingClientRect();
             ripple.style.left = '50%';
             ripple.style.top = '50%';
 
-            // Animate and remove
             ripple.addEventListener('animationend', () => {
                 ripple.remove();
             });
         });
 
         btn.addEventListener('click', (e) => {
-            // Add click animation
             btn.classList.add('clicked');
             setTimeout(() => btn.classList.remove('clicked'), 300);
 
-            // Show success feedback
             if (btn.classList.contains('connect-btn')) {
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '<i class="ri-check-line"></i><span>Connected!</span>';
@@ -115,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Interactive Background
     const bg = document.querySelector('.interactive-bg');
     const orb = document.querySelector('.glow-orb');
 
@@ -124,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const mouseX = e.clientX / window.innerWidth;
             const mouseY = e.clientY / window.innerHeight;
 
-            // Move orb with parallax effect
             orb.style.transform = `translate(
                 ${mouseX * 100 - 50}px,
                 ${mouseY * 100 - 50}px
@@ -132,13 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Smooth section transitions
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
 
-                // Animate skill tags sequentially
                 const skillTags = entry.target.querySelectorAll('.skill-tag');
                 skillTags.forEach((tag, index) => {
                     setTimeout(() => {
@@ -147,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, index * 100);
                 });
 
-                // Animate social icons
                 const socialIcons = entry.target.querySelectorAll('.social-icon');
                 socialIcons.forEach((icon, index) => {
                     setTimeout(() => {
@@ -161,12 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
         threshold: 0.2
     });
 
-    // Observe team cards
     document.querySelectorAll('.team-card').forEach(card => {
         observer.observe(card);
     });
 
-    // Performance optimization for animations
     let frameRequest;
     window.addEventListener('scroll', () => {
         if (!frameRequest) {
@@ -185,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initialize tooltips with custom timing
     const tooltips = document.querySelectorAll('[data-tooltip]');
     tooltips.forEach(tooltip => {
         let timeout;

@@ -1,11 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Animate stats numbers
     const animateStats = () => {
         const stats = document.querySelectorAll('.stat-number');
 
         stats.forEach(stat => {
             const targetValue = parseFloat(stat.dataset.value);
-            const duration = 2000; // 2 seconds
+            const duration = 2000;
             const steps = 60;
             const stepValue = targetValue / steps;
             let currentValue = 0;
@@ -27,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Ethereum coin interaction
     const ethCoin = document.querySelector('.eth-coin');
     const container = document.querySelector('.ethereum-container');
 
@@ -55,10 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize animations
     animateStats();
 
-    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', (e) => {
             e.preventDefault();
@@ -74,34 +70,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Smooth scroll functionality
     const learnMoreBtn = document.getElementById('learnMoreBtn');
 
     learnMoreBtn.addEventListener('click', () => {
-        // Get the target section
         const targetSection = document.getElementById('about');
-
-        // Add click animation to button
         learnMoreBtn.classList.add('clicked');
-
-        // Smooth scroll to about section
         targetSection.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });
 
-        // Optional: Add active state to button
         setTimeout(() => {
             learnMoreBtn.classList.remove('clicked');
         }, 300);
     });
 });
 
-// Add this to your main.js
 document.addEventListener('DOMContentLoaded', () => {
-    // Previous button click handler code...
 
-    // Scroll Progress Indicator
     const progressIndicator = document.createElement('div');
     progressIndicator.className = 'scroll-progress';
     document.body.appendChild(progressIndicator);

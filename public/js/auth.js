@@ -1,34 +1,16 @@
 class AuthController {
     constructor() {
         this.initializeElements();
+        this.setupAuthState();
         this.bindEvents();
         this.setupBackgroundEffects();
         this.initializeWeb3();
     }
 
-    bindForgotPasswordEvents() {
-        this.forgotPasswordLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.forgotPasswordModal.classList.add('active');
-        });
+    /**
+     * Clear Forms Method
+     */
 
-        if (this.closeForgotPasswordModal) {
-            this.closeForgotPasswordModal.addEventListener('click', () => {
-                this.forgotPasswordModal.classList.remove('active');
-            });
-        }
-
-        if (this.forgotPasswordForm) {
-            this.forgotPasswordForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = e.target.email.value;
-                await this.handleForgotPassword(email);
-                this.forgotPasswordModal.classList.remove('active');
-            });
-        }
-    }
-
-    // Clear Forms Method
     clearForms() {
         [this.loginForm, this.registerForm].forEach(form => {
             if (form) {
@@ -42,30 +24,36 @@ class AuthController {
         });
     }
 
-    // Show Success Modal Method
-    showSuccessModal() {
-        const successModal = document.querySelector('.success-modal');
-        if (successModal) {
-            // Add fade-in animation class
-            successModal.classList.add('active');
+    /**
+     * Show Success Modal Method
+     */
 
-            // Auto-hide after 3 seconds and switch to login form
+    showSuccessModal() {
+        if (this.successModal) {
+            this.successModal.classList.add('active');
             setTimeout(() => {
-                successModal.classList.remove('active');
-                // Switch to login form after modal fades out
-                setTimeout(() => {
-                    this.switchForm('login');
-                }, 300); // Match this with your CSS transition time
-            }, 3000);
+                this.successModal.classList.remove('active');
+                this.switchForm('login');
+            }, 2000);
+        } else {
+            // Fallback if modal element doesn't exist
+            this.showToast('Account created successfully!', 'success');
+            setTimeout(() => this.switchForm('login'), 2000);
         }
     }
 
-    // Helper method to handle errors
+    /**
+     * Helper method to handle errors
+     */
+
     showError(element, message) {
         this.showToast(message, 'error');
     }
 
-    // Initialize Web3
+    /**
+     * Initialize Web3
+     */
+
     async initializeWeb3() {
         this.web3State = {
             provider: null,
@@ -77,13 +65,8 @@ class AuthController {
 
         if (typeof window.ethereum !== 'undefined') {
             try {
-                // Initialize ethers provider
                 this.web3State.provider = new ethers.providers.Web3Provider(window.ethereum);
-
-                // Setup event listeners
                 this.setupWeb3Events();
-
-                // Check if already connected
                 const accounts = await window.ethereum.request({ method: 'eth_accounts' });
                 if (accounts.length > 0) {
                     this.userAccount = accounts[0];
@@ -96,31 +79,17 @@ class AuthController {
         }
     }
 
-    // Initialize DOM Elements
     initializeElements() {
-        // Forms
         this.loginForm = document.getElementById('loginForm');
         this.registerForm = document.getElementById('registerForm');
-        this.forgotPasswordForm = document.getElementById('forgotPasswordForm');
-        this.resetPasswordForm = document.getElementById('resetPasswordForm');
         this.switchButtons = document.querySelectorAll('.switch-btn');
-
-        // Modals
         this.successModal = document.querySelector('.success-modal');
         this.web3Modal = document.getElementById('web3Modal');
-        this.forgotPasswordModal = document.getElementById('forgotPasswordModal');
-        this.closeForgotPasswordModal = document.getElementById('closeForgotPasswordModal');
-
-        // Web3 Elements
         this.web3LoginBtn = document.getElementById('web3LoginBtn');
         this.walletOptions = document.querySelectorAll('.wallet-option');
         this.closeWeb3Modal = document.getElementById('closeWeb3Modal');
         this.walletStatus = document.querySelector('.wallet-status');
-
-        // Current active form
         this.currentForm = 'login';
-
-        // Web3 state initialization
         this.web3State = {
             provider: null,
             signer: null,
@@ -128,30 +97,30 @@ class AuthController {
             chainId: null,
             connected: false
         };
-
-        // Add specific references for the switcher
+        this.isConnected = false;
         this.formSwitcher = document.querySelector('.form-switcher');
         this.switchIndicator = document.querySelector('.switch-indicator');
     }
 
-    // Bind Event Listeners
+    /**
+     * Bind Event Listeners
+     */
+
     bindEvents() {
-        // Form submissions - only bind once
-        if (this.registerForm) {
-            this.registerForm.addEventListener('submit', (e) => this.handleSubmit(e, 'register'));
-        }
-        if (this.loginForm) {
-            this.loginForm.addEventListener('submit', (e) => this.handleSubmit(e, 'login'));
-        }
-
-        // Forgot password events
-        if (this.forgotPasswordForm && this.forgotPasswordModal && this.closeForgotPasswordModal) {
-            this.bindForgotPasswordEvents();
-        }
-
-        // Form switching
         this.switchButtons.forEach(btn => {
             btn.addEventListener('click', () => this.switchForm(btn.dataset.form));
+        });
+
+        // Form submissions
+        this.loginForm.addEventListener('submit', (e) => this.handleSubmit(e, 'login'));
+        this.registerForm.addEventListener('submit', (e) => this.handleSubmit(e, 'register'));
+
+        // Web3 related events
+        this.web3LoginBtn.addEventListener('click', () => this.showWeb3Modal());
+        this.closeWeb3Modal.addEventListener('click', () => this.hideWeb3Modal());
+
+        this.walletOptions.forEach(option => {
+            option.addEventListener('click', () => this.connectWallet(option.dataset.wallet));
         });
 
         // Password toggles
@@ -165,24 +134,18 @@ class AuthController {
             input.addEventListener('input', (e) => this.clearError(e));
         });
 
-        // Web3 related events
-        this.web3LoginBtn.addEventListener('click', () => this.showWeb3Modal());
-        this.closeWeb3Modal.addEventListener('click', () => this.hideWeb3Modal());
-
-        this.walletOptions.forEach(option => {
-            option.addEventListener('click', () => this.connectWallet(option.dataset.wallet));
-        });
-
         // Setup Web3 events if provider exists
         if (window.ethereum) {
             this.setupWeb3Events();
         }
     }
 
-    // Setup Web3 Event Listeners
+    /**
+     * Setup Web3 Event Listeners
+     */
+
     setupWeb3Events() {
         if (window.ethereum) {
-            // Handle account changes
             window.ethereum.on('accountsChanged', (accounts) => {
                 if (accounts.length === 0) {
                     this.handleDisconnect();
@@ -190,20 +153,20 @@ class AuthController {
                     this.handleAccountsChanged(accounts);
                 }
             });
-
-            // Handle chain changes
             window.ethereum.on('chainChanged', (chainId) => {
                 this.handleChainChanged(chainId);
             });
 
-            // Handle disconnect
             window.ethereum.on('disconnect', (error) => {
                 this.handleDisconnect();
             });
         }
     }
 
-    // Web3 Modal Management
+    /**
+     * Web3 Modal Management
+     */
+
     showWeb3Modal() {
         this.web3Modal.classList.add('active');
     }
@@ -212,7 +175,10 @@ class AuthController {
         this.web3Modal.classList.remove('active');
     }
 
-    // Update wallet status UI
+    /**
+     * Update wallet status UI
+     */
+
     updateWalletStatus(message, isLoading = true) {
         this.walletStatus.style.display = 'block';
         const statusIcon = this.walletStatus.querySelector('.status-icon i');
@@ -222,7 +188,10 @@ class AuthController {
         statusMessage.textContent = message;
     }
 
-    // Wallet Connection
+    /**
+     * Wallet Connection
+     */
+
     async connectWallet(walletType) {
         try {
             this.updateWalletStatus('Connecting to wallet...');
@@ -239,8 +208,6 @@ class AuthController {
                     await provider.send("eth_requestAccounts", []);
                     const signer = provider.getSigner();
                     accounts = [await signer.getAddress()];
-
-                    // Update web3 state
                     this.web3State.provider = provider;
                     this.web3State.signer = signer;
                     break;
@@ -264,7 +231,6 @@ class AuthController {
                 this.web3State.account = accounts[0];
                 this.web3State.connected = true;
 
-                // Get chain ID
                 const chainId = await window.ethereum.request({ method: 'eth_chainId' });
                 this.web3State.chainId = chainId;
 
@@ -290,7 +256,10 @@ class AuthController {
         }
     }
 
-    // Handle account changes
+    /**
+     * Handle account changes
+     */
+
     handleAccountsChanged(accounts) {
         if (accounts.length === 0) {
             this.handleDisconnect();
@@ -302,14 +271,20 @@ class AuthController {
         }
     }
 
-    // Handle chain changes
+    /**
+     * Handle chain changes
+     */
+
     handleChainChanged(chainId) {
         this.web3State.chainId = chainId;
         this.showToast(`Network changed to ${this.getNetworkName(chainId)}`, 'info');
         window.location.reload();
     }
 
-    // Handle disconnect
+    /**
+     * Handle disconnect
+     */
+
     handleDisconnect() {
         this.web3State.connected = false;
         this.web3State.account = null;
@@ -319,7 +294,6 @@ class AuthController {
         this.showToast('Wallet disconnected', 'info');
     }
 
-    // Update UI after wallet connection
     updateWalletUI() {
         if (this.isConnected && this.userAccount) {
             this.web3LoginBtn.classList.add('connected');
@@ -337,7 +311,10 @@ class AuthController {
         }
     }
 
-    // Get network name from chain ID
+    /**
+     * Get network name from chain ID
+     */
+
     getNetworkName(chainId) {
         const networks = {
             '0x1': 'Ethereum Mainnet',
@@ -354,7 +331,9 @@ class AuthController {
         return networks[chainId] || 'Unknown Network';
     }
 
-    // Toast Notification System
+    /**
+     * Toast Notification System
+     */
     showToast(message, type = 'info') {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -375,11 +354,7 @@ class AuthController {
         }
 
         container.appendChild(toast);
-
-        // Trigger reflow for animation
         toast.offsetHeight;
-
-        // Add show class
         toast.classList.add('show');
 
         setTimeout(() => {
@@ -388,7 +363,6 @@ class AuthController {
         }, 3000);
     }
 
-    // Form switching
     switchForm(formType) {
         if (this.currentForm === formType) return;
 
@@ -409,7 +383,6 @@ class AuthController {
         this.clearForms();
     }
 
-    // Update switch indicator position
     updateSwitchIndicator(formType) {
         this.switchIndicator.style.transition = 'none';
         this.switchIndicator.offsetHeight;
@@ -419,13 +392,10 @@ class AuthController {
         const buttonRect = activeButton.getBoundingClientRect();
 
         const leftPosition = buttonRect.left - switcherRect.left;
-
-        // Re-enable transition and move
         this.switchIndicator.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
         this.switchIndicator.style.transform = `translateX(${leftPosition}px)`;
     }
 
-    // Password Visibility Toggle
     togglePassword(e) {
         const button = e.currentTarget;
         const input = button.parentElement.querySelector('.input-field');
@@ -440,7 +410,6 @@ class AuthController {
         }
     }
 
-    // Form Validation
     validateInput(e) {
         const input = e.target;
         const value = input.value.trim();
@@ -483,7 +452,6 @@ class AuthController {
         return isValid;
     }
 
-    // Set Input Status
     setInputStatus(input, isValid, message = '') {
         const formGroup = input.closest('.form-group');
         const errorElement = formGroup.querySelector('.error-message');
@@ -505,7 +473,6 @@ class AuthController {
         }
     }
 
-    // Clear Error State
     clearError(e) {
         const formGroup = e.target.closest('.form-group');
         formGroup.classList.remove('error');
@@ -513,162 +480,111 @@ class AuthController {
         if (errorElement) errorElement.textContent = '';
     }
 
-    // Form Submission Handler
     async handleSubmit(e, formType) {
         e.preventDefault();
         const form = e.target;
         const submitBtn = form.querySelector('.submit-btn');
+        let isValid = true;
+        form.querySelectorAll('.input-field').forEach(input => {
+            if (!this.validateInput({ target: input })) {
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            this.showToast('Please fill all required fields correctly', 'error');
+            return;
+        }
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
 
         try {
-            // Show loading state
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.classList.add('loading');
-            }
+            const data = {
+                ...(formType === 'login' ? {
+                    email: form.querySelector('#loginEmail')?.value?.trim(),
+                    password: form.querySelector('#loginPassword')?.value
+                } : {
+                    name: form.querySelector('#registerName')?.value?.trim(),
+                    email: form.querySelector('#registerEmail')?.value?.trim(),
+                    password: form.querySelector('#registerPassword')?.value,
+                    walletAddress: this.isConnected ? this.userAccount : null
+                })
+            };
 
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
+            const response = await this.simulateApiCall(formType, data);
 
-            const response = await fetch(`/api/auth/${formType}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+            if (response.status === 'success') {
+                this.showToast(response.message, 'success');
 
-            // Log the raw response for debugging
-            console.log('Response status:', response.status);
-            const responseText = await response.text();
-            console.log('Response text:', responseText);
-
-            let result;
-            try {
-                result = JSON.parse(responseText);
-            } catch (error) {
-                console.error('JSON parse error:', error);
-                throw new Error('Invalid server response');
-            }
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Operation failed');
-            }
-
-            if (formType === 'register') {
-                // Show success modal
-                const successModal = document.querySelector('.success-modal');
-                if (successModal) {
-                    successModal.classList.add('active');
+                if (formType === 'register') {
+                    this.showSuccessModal();
                     setTimeout(() => {
-                        successModal.classList.remove('active');
-                        setTimeout(() => this.switchForm('login'), 300);
-                    }, 3000);
+                        this.switchForm('login');
+                    }, 2000);
+                } else if (formType === 'login') {
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1000);
                 }
-                this.showToast('Registration successful! Please check your email for verification.', 'success');
-            } else {
-                // Handle login
-                localStorage.setItem('token', result.data.token);
-                localStorage.setItem('user', JSON.stringify(result.data.user));
-                this.showToast('Login successful!', 'success');
-                window.location.href = '/dashboard';
             }
-
         } catch (error) {
-            console.error('Form submission error:', error);
             this.showToast(error.message || 'An error occurred', 'error');
         } finally {
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('loading');
-            }
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
         }
     }
 
-    // Add this method to the AuthController class in auth.js
+    async simulateApiCall(type, data) {
+        const endpoint = type === 'login' ? '/api/auth/login' : '/api/auth/register';
 
-    async verifyEmail(token) {
         try {
-            const response = await fetch(`/api/auth/verify-email?token=${token}`);
-            const result = await response.json();
+            console.log(`Making ${type} request to ${endpoint}`);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-            if (!response.ok) {
-                throw new Error(result.message || 'Verification failed');
-            }
-
-            this.showToast('Email verified successfully. You can now login.', 'success');
-            this.switchForm('login');
-        } catch (error) {
-            this.showToast(error.message, 'error');
-        }
-    }
-
-// Add password reset methods
-    async handleForgotPassword(email) {
-        try {
-            const response = await fetch('/api/auth/forgot-password', {
+            const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                 },
-                body: JSON.stringify({ email })
+                body: JSON.stringify(data),
+                signal: controller.signal,
             });
 
-            const result = await response.json();
+            clearTimeout(timeoutId);
+
+            const responseData = await response.json();
+            console.log(`${type} response:`, responseData);
 
             if (!response.ok) {
-                throw new Error(result.message || 'Operation failed');
+                throw new Error(responseData.message || `${type} failed`);
             }
 
-            this.showToast('Password reset instructions sent to your email', 'success');
+            if (type === 'login' && responseData.data?.token) {
+                localStorage.setItem('authToken', `Bearer ${responseData.data.token}`);
+                localStorage.setItem('userData', JSON.stringify(responseData.data.user));
+            }
+
+            return responseData;
         } catch (error) {
-            this.showToast(error.message, 'error');
+            console.error(`${type} error:`, error);
+            if (error.name === 'AbortError') {
+                throw new Error('Request timed out. Please try again.');
+            }
+            throw error;
         }
     }
 
-    async handleResetPassword(token, password) {
-        try {
-            const response = await fetch('/api/auth/reset-password', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ token, password })
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || 'Operation failed');
-            }
-
-            this.showToast('Password reset successful. You can now login.', 'success');
-            this.switchForm('login');
-        } catch (error) {
-            this.showToast(error.message, 'error');
-        }
+    isAuthenticated() {
+        const token = localStorage.getItem('authToken');
+        return !!token;
     }
 
-    // API Call Simulation
-    simulateApiCall(type, data) {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > 0.1) { // 90% success rate
-                    resolve({ success: true, data });
-                } else {
-                    reject(new Error(type === 'login' ?
-                        'Invalid credentials' :
-                        'Account creation failed'
-                    ));
-                }
-            }, 1500);
-        });
-    }
-
-    // Background Effects
     setupBackgroundEffects() {
         const spheres = document.querySelectorAll('.gradient-sphere');
 
-        // Parallax effect on mouse move
         document.addEventListener('mousemove', (e) => {
             const { clientX, clientY } = e;
             const centerX = window.innerWidth / 2;
@@ -683,9 +599,35 @@ class AuthController {
             });
         });
     }
+    setupAuthState() {
+        const token = localStorage.getItem('authToken');
+        const userData = localStorage.getItem('userData');
+
+        if (token && userData) {
+            try {
+                this.currentUser = JSON.parse(userData);
+                return true;
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                this.logout();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    logout() {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userData');
+        window.location.href = '/auth.html';
+    }
+
+    getUserData() {
+        const userData = localStorage.getItem('userData');
+        return userData ? JSON.parse(userData) : null;
+    }
 }
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new AuthController();
 });

@@ -1,21 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Form elements
     const contactForm = document.getElementById('contactForm');
     const submitBtn = contactForm.querySelector('.submit-btn');
     const btnText = submitBtn.querySelector('.btn-text');
     const btnIcon = submitBtn.querySelector('.btn-icon');
     const btnLoading = submitBtn.querySelector('.btn-loading');
-
-    // Modal elements
     const successModal = document.querySelector('.success-modal');
     const modalCloseBtn = successModal?.querySelector('.modal-close');
-
-    // Input animation
     const inputs = document.querySelectorAll('input, textarea');
 
-    // Input focus effects
+    /**
+     * Input focus effects
+     */
+
     inputs.forEach(input => {
-        // Add focus effects
         input.addEventListener('focus', () => {
             input.parentElement.classList.add('focused');
         });
@@ -25,13 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
             validateInput(input);
         });
 
-        // Add input validation on change
         input.addEventListener('input', () => {
             validateInput(input);
         });
     });
 
-    // Input validation function
+    /**
+     * Input validation function
+     */
+
     function validateInput(input) {
         const wrapper = input.parentElement;
 
@@ -52,7 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
-    // Form submission handling
+    /**
+     * Form submission handling
+     */
+
     contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -69,21 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Show loading state
         setLoadingState(true);
-
-        // Collect form data
         const formData = new FormData(contactForm);
         const formDataObj = Object.fromEntries(formData.entries());
 
         try {
-            // Simulate API call (replace with your actual API endpoint)
             await simulateApiCall(formDataObj);
-
-            // Show success message
             showSuccessMessage();
-
-            // Reset form
             contactForm.reset();
             inputs.forEach(input => {
                 input.parentElement.classList.remove('valid', 'focused');
@@ -96,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Loading state handler
     function setLoadingState(isLoading) {
         submitBtn.disabled = isLoading;
 
@@ -113,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Success modal handlers
     function showSuccessMessage() {
         successModal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -129,19 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
-    // Modal close button
     modalCloseBtn?.addEventListener('click', hideSuccessMessage);
-
-    // Close modal on outside click
     successModal?.addEventListener('click', (e) => {
         if (e.target === successModal) {
             hideSuccessMessage();
         }
     });
 
-    // Error message handler
     function showFormError(message) {
-        // Create error element if it doesn't exist
         let errorElement = contactForm.querySelector('.form-error');
         if (!errorElement) {
             errorElement = document.createElement('div');
@@ -149,19 +136,16 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.parentElement.insertBefore(errorElement, submitBtn);
         }
 
-        // Show error message with animation
         errorElement.textContent = message;
         errorElement.style.opacity = '1';
         errorElement.style.transform = 'translateY(0)';
 
-        // Hide error after 3 seconds
         setTimeout(() => {
             errorElement.style.opacity = '0';
             errorElement.style.transform = 'translateY(-10px)';
         }, 3000);
     }
 
-    // Simulate API call (replace with your actual API call)
     function simulateApiCall(data) {
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -171,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add floating animation to background
     const gradientSphere = document.querySelector('.gradient-sphere');
     let mouseX = 0;
     let mouseY = 0;

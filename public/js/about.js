@@ -1,20 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize AOS (Animate On Scroll)
+
+    /**
+     * Initialize AOS (Animate On Scroll)
+     */
+
     AOS.init({
         duration: 1000,
         once: true,
         offset: 100
     });
 
-    // Hover effect for use case cards
+    /**
+     * Hover effect for use case cards
+     */
+
     const useCards = document.querySelectorAll('.use-case-card');
     useCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
             const hoverContent = card.querySelector('.card-hover-content');
             hoverContent.style.opacity = '1';
             hoverContent.style.transform = 'translateY(0)';
-
-            // Add glow effect
             card.style.boxShadow = '0 8px 32px rgba(108, 99, 255, 0.2)';
             card.style.borderColor = 'rgba(108, 99, 255, 0.3)';
         });
@@ -23,14 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const hoverContent = card.querySelector('.card-hover-content');
             hoverContent.style.opacity = '0';
             hoverContent.style.transform = 'translateY(100%)';
-
-            // Remove glow effect
             card.style.boxShadow = '';
             card.style.borderColor = '';
         });
     });
 
-    // Animate workflow steps on scroll
+    /**
+     * Animate workflow steps on scroll
+     */
+
     const steps = document.querySelectorAll('.step');
     const observerOptions = {
         threshold: 0.3,
@@ -41,8 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-
-                // Animate the step number
                 const stepNumber = entry.target.querySelector('.step-number');
                 stepNumber.style.transform = 'scale(1.1)';
                 setTimeout(() => {
@@ -54,7 +58,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     steps.forEach(step => stepObserver.observe(step));
 
-    // Parallax effect for background spheres
+    /**
+     * Parallax effect for background spheres
+     */
+
     window.addEventListener('scroll', () => {
         const spheres = document.querySelectorAll('.gradient-sphere');
         const scrolled = window.pageYOffset;
@@ -65,7 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Animated counter for statistics
+    /**
+     * Animated counter for statistics
+     */
     function animateNumber(element, target, duration = 2000) {
         let start = 0;
         const increment = target / (duration / 16);
@@ -83,7 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateNumber();
     }
 
-    // Smooth scroll for navigation
+    /**
+     * Smooth scroll for navigation
+     */
+
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', (e) => {
             e.preventDefault();
@@ -98,7 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Interactive timeline navigation
+    /**
+     * Interactive timeline navigation
+     */
+
     const timelineSteps = document.querySelectorAll('.step');
     let currentStep = 0;
 
@@ -114,13 +129,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Auto advance timeline
+    /**
+     * Auto advance timeline
+     */
+
     setInterval(() => {
         currentStep = (currentStep + 1) % timelineSteps.length;
         highlightStep(currentStep);
     }, 3000);
-
-    // Mouse trail effect for cards
     const cards = document.querySelectorAll('.use-case-card');
 
     cards.forEach(card => {
@@ -148,7 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Add floating particles in background
+    /**
+     * Add floating particles in background
+     */
+
     const particlesContainer = document.createElement('div');
     particlesContainer.className = 'particles-container';
     document.querySelector('.about-section').appendChild(particlesContainer);
@@ -164,7 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Add this CSS to your about.css file for particles
 const particleStyles = `
 .particles-container {
     position: absolute;
@@ -198,11 +216,9 @@ const particleStyles = `
 }
 `;
 
-// Advanced Particle System
 class Particle {
     constructor(container) {
-        if (!container) return; // Guard clause if container doesn't exist
-
+        if (!container) return;
         this.container = container;
         this.element = document.createElement('div');
         this.element.className = 'particle';
@@ -244,11 +260,13 @@ class Particle {
     }
 }
 
-// Initialize particle system
+/**
+ * Initialize particle system
+ */
+
 const particleSystem = {
     particles: [],
     init() {
-        // First, create the container if it doesn't exist
         let container = document.querySelector('.particles-container');
         if (!container) {
             container = document.createElement('div');
@@ -261,22 +279,18 @@ const particleSystem = {
                 return;
             }
         }
-
-        // Clear any existing particles
         this.particles = [];
         container.innerHTML = '';
-
-        // Create new particles
         for (let i = 0; i < 100; i++) {
             const particle = new Particle(container);
-            if (particle.element) { // Only add if particle was created successfully
+            if (particle.element) {
                 this.particles.push(particle);
             }
         }
         this.animate();
     },
     animate() {
-        if (this.particles.length === 0) return; // Don't animate if no particles
+        if (this.particles.length === 0) return;
 
         this.particles.forEach(particle => particle.update());
         requestAnimationFrame(() => this.animate());
@@ -285,14 +299,12 @@ const particleSystem = {
 
 
 
-// Wait for DOM to be fully loaded before initializing
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         particleSystem.init();
-    }, 100); // Small delay to ensure DOM is ready
+    }, 100);
 });
 
-// Create and append particle styles
 const styleSheet = document.createElement('style');
 styleSheet.textContent = particleStyles;
 document.head.appendChild(styleSheet);
