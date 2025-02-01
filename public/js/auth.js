@@ -545,15 +545,14 @@ class AuthController {
         }
     }
 
-    // Real API Call
-    // public/js/auth.js
+    // Update the simulateApiCall method in AuthController class
     async simulateApiCall(type, data) {
-        const endpoint = type === 'login' ? '/api/login' : '/api/register';
+        const endpoint = type === 'login' ? '/api/auth/login' : '/api/auth/register';
 
         try {
-            console.log(`Making ${type} request to ${endpoint}`);
+            console.log(`Making ${type} request to ${endpoint}`, data); // Add data logging
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
 
             const response = await fetch(endpoint, {
                 method: 'POST',
@@ -575,9 +574,7 @@ class AuthController {
             }
 
             if (type === 'login' && responseData.data?.token) {
-                // Store auth token with 'Bearer' prefix
                 localStorage.setItem('authToken', `Bearer ${responseData.data.token}`);
-                // Store user data
                 localStorage.setItem('userData', JSON.stringify(responseData.data.user));
             }
 
@@ -590,6 +587,7 @@ class AuthController {
             throw error;
         }
     }
+
 
     isAuthenticated() {
         const token = localStorage.getItem('authToken');

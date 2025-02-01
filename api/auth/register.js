@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('../backend/models/User');
+const User = require('../../backend/models/User');
 
 const connectDB = async () => {
     if (mongoose.connections[0].readyState) return;
@@ -22,11 +22,13 @@ const connectDB = async () => {
 };
 
 const handler = async (req, res) => {
+    // Enable CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
+    // Handle OPTIONS request
     if (req.method === 'OPTIONS') {
         res.status(200).end();
         return;
@@ -44,6 +46,7 @@ const handler = async (req, res) => {
 
         const { name, email, password, walletAddress } = req.body;
 
+        // Validate input
         if (!email || !password || !name) {
             return res.status(400).json({
                 status: 'error',
@@ -51,6 +54,7 @@ const handler = async (req, res) => {
             });
         }
 
+        // Check if user exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
@@ -59,15 +63,17 @@ const handler = async (req, res) => {
             });
         }
 
+        // Create new user
         const user = new User({
             name,
             email,
-            password,
+            password, // Password will be hashed by the User model pre-save hook
             walletAddress
         });
 
         await user.save();
 
+        // Return success without sensitive data
         return res.status(201).json({
             status: 'success',
             message: 'User registered successfully',
