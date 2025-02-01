@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
         const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
 
         const { payload } = await jwtVerify(token, secretKey, {
-            issuer: 'ivs-testing-vercel',
+            issuer: 'project-ivs',
             audience: 'user'
         });
 
