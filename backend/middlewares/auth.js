@@ -1,59 +1,49 @@
-const jwt = require('jsonwebtoken');
-const { pool } = require('../config/database');
+const auth = {
+    validateToken: async (request, reply) => {
+        try {
+            const authHeader = request.headers.authorization;
 
-const verifyToken = async (req, res, next) => {
-    try {
-        const token = req.headers.authorization?.split(' ')[1];
+            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                reply.code(401).send({
+                    status: 'error',
+                    message: 'Authentication token is required'
+                });
+                return;
+            }
 
-        if (!token) {
-            return res.status(401).json({
-                status: 'error',
-                message: 'No token provided'
-            });
-        }
+            const token = authHeader.slice(7);
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const decoded = await User.verifyToken(token);
 
-        /**
-         *Check if token exists in sessions table
-         */
-        const [session] = await pool.query(
-            'SELECT * FROM sessions WHERE token = ? AND expires_at > NOW()',
-            [token]
-        );
+            if (!decoded || !decoded._id) {
+                reply.code(401).send({
+                    status: 'error',
+                    message: 'Invalid token format'
+                });
+                return;
+            }
 
-        if (!session.length) {
-            return res.status(401).json({
+            const user = await User.findById(decoded._id).select('-password');
+
+            if (!user) {
+                reply.code(401).send({
+                    status: 'error',
+                    message: 'User not found'
+                });
+                return;
+            }
+
+            request.user = user;
+
+        } catch (error) {
+            console.error('Token verification error:', error);
+            reply.code(401).send({
                 status: 'error',
                 message: 'Invalid or expired token'
             });
+            return;
         }
-
-        /**
-         *Get user details
-         */
-        const [user] = await pool.query(
-            'SELECT id, email, full_name, email_verified, wallet_address FROM users WHERE id = ?',
-            [decoded.userId]
-        );
-
-        if (!user.length) {
-            return res.status(401).json({
-                status: 'error',
-                message: 'User not found'
-            });
-        }
-
-        req.user = user[0];
-        next();
-    } catch (error) {
-        return res.status(401).json({
-            status: 'error',
-            message: 'Invalid token'
-        });
     }
 };
 
-module.exports = {
-    verifyToken
-};
+module.exports = auth;
