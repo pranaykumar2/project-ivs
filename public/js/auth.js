@@ -7,10 +7,12 @@ class AuthController {
         this.initializeWeb3();
     }
 
-    /**
-     * Clear Forms Method
-     */
+    showError(message) {
+        console.error('Registration error:', message);
+        this.showToast(message, 'error');
+    }
 
+    // Clear Forms Method
     clearForms() {
         [this.loginForm, this.registerForm].forEach(form => {
             if (form) {
@@ -24,10 +26,7 @@ class AuthController {
         });
     }
 
-    /**
-     * Show Success Modal Method
-     */
-
+    // Show Success Modal Method
     showSuccessModal() {
         if (this.successModal) {
             this.successModal.classList.add('active');
@@ -42,18 +41,12 @@ class AuthController {
         }
     }
 
-    /**
-     * Helper method to handle errors
-     */
-
+    // Helper method to handle errors
     showError(element, message) {
         this.showToast(message, 'error');
     }
 
-    /**
-     * Initialize Web3
-     */
-
+    // Initialize Web3
     async initializeWeb3() {
         this.web3State = {
             provider: null,
@@ -65,8 +58,13 @@ class AuthController {
 
         if (typeof window.ethereum !== 'undefined') {
             try {
+                // Initialize ethers provider
                 this.web3State.provider = new ethers.providers.Web3Provider(window.ethereum);
+
+                // Setup event listeners
                 this.setupWeb3Events();
+
+                // Check if already connected
                 const accounts = await window.ethereum.request({ method: 'eth_accounts' });
                 if (accounts.length > 0) {
                     this.userAccount = accounts[0];
@@ -79,17 +77,27 @@ class AuthController {
         }
     }
 
+    // Initialize DOM Elements
     initializeElements() {
+        // Forms
         this.loginForm = document.getElementById('loginForm');
         this.registerForm = document.getElementById('registerForm');
         this.switchButtons = document.querySelectorAll('.switch-btn');
+
+        // Modals
         this.successModal = document.querySelector('.success-modal');
         this.web3Modal = document.getElementById('web3Modal');
+
+        // Web3 Elements
         this.web3LoginBtn = document.getElementById('web3LoginBtn');
         this.walletOptions = document.querySelectorAll('.wallet-option');
         this.closeWeb3Modal = document.getElementById('closeWeb3Modal');
         this.walletStatus = document.querySelector('.wallet-status');
+
+        // Current active form
         this.currentForm = 'login';
+
+        // Web3 state initialization
         this.web3State = {
             provider: null,
             signer: null,
@@ -97,16 +105,15 @@ class AuthController {
             chainId: null,
             connected: false
         };
-        this.isConnected = false;
+
+        // Add specific references for the switcher
         this.formSwitcher = document.querySelector('.form-switcher');
         this.switchIndicator = document.querySelector('.switch-indicator');
     }
 
-    /**
-     * Bind Event Listeners
-     */
-
+    // Bind Event Listeners
     bindEvents() {
+        // Form switching
         this.switchButtons.forEach(btn => {
             btn.addEventListener('click', () => this.switchForm(btn.dataset.form));
         });
@@ -140,12 +147,10 @@ class AuthController {
         }
     }
 
-    /**
-     * Setup Web3 Event Listeners
-     */
-
+    // Setup Web3 Event Listeners
     setupWeb3Events() {
         if (window.ethereum) {
+            // Handle account changes
             window.ethereum.on('accountsChanged', (accounts) => {
                 if (accounts.length === 0) {
                     this.handleDisconnect();
@@ -153,20 +158,20 @@ class AuthController {
                     this.handleAccountsChanged(accounts);
                 }
             });
+
+            // Handle chain changes
             window.ethereum.on('chainChanged', (chainId) => {
                 this.handleChainChanged(chainId);
             });
 
+            // Handle disconnect
             window.ethereum.on('disconnect', (error) => {
                 this.handleDisconnect();
             });
         }
     }
 
-    /**
-     * Web3 Modal Management
-     */
-
+    // Web3 Modal Management
     showWeb3Modal() {
         this.web3Modal.classList.add('active');
     }
@@ -175,10 +180,7 @@ class AuthController {
         this.web3Modal.classList.remove('active');
     }
 
-    /**
-     * Update wallet status UI
-     */
-
+    // Update wallet status UI
     updateWalletStatus(message, isLoading = true) {
         this.walletStatus.style.display = 'block';
         const statusIcon = this.walletStatus.querySelector('.status-icon i');
@@ -188,10 +190,7 @@ class AuthController {
         statusMessage.textContent = message;
     }
 
-    /**
-     * Wallet Connection
-     */
-
+    // Wallet Connection
     async connectWallet(walletType) {
         try {
             this.updateWalletStatus('Connecting to wallet...');
@@ -208,6 +207,8 @@ class AuthController {
                     await provider.send("eth_requestAccounts", []);
                     const signer = provider.getSigner();
                     accounts = [await signer.getAddress()];
+
+                    // Update web3 state
                     this.web3State.provider = provider;
                     this.web3State.signer = signer;
                     break;
@@ -231,6 +232,7 @@ class AuthController {
                 this.web3State.account = accounts[0];
                 this.web3State.connected = true;
 
+                // Get chain ID
                 const chainId = await window.ethereum.request({ method: 'eth_chainId' });
                 this.web3State.chainId = chainId;
 
@@ -256,10 +258,7 @@ class AuthController {
         }
     }
 
-    /**
-     * Handle account changes
-     */
-
+    // Handle account changes
     handleAccountsChanged(accounts) {
         if (accounts.length === 0) {
             this.handleDisconnect();
@@ -271,20 +270,14 @@ class AuthController {
         }
     }
 
-    /**
-     * Handle chain changes
-     */
-
+    // Handle chain changes
     handleChainChanged(chainId) {
         this.web3State.chainId = chainId;
         this.showToast(`Network changed to ${this.getNetworkName(chainId)}`, 'info');
         window.location.reload();
     }
 
-    /**
-     * Handle disconnect
-     */
-
+    // Handle disconnect
     handleDisconnect() {
         this.web3State.connected = false;
         this.web3State.account = null;
@@ -294,6 +287,7 @@ class AuthController {
         this.showToast('Wallet disconnected', 'info');
     }
 
+    // Update UI after wallet connection
     updateWalletUI() {
         if (this.isConnected && this.userAccount) {
             this.web3LoginBtn.classList.add('connected');
@@ -311,10 +305,7 @@ class AuthController {
         }
     }
 
-    /**
-     * Get network name from chain ID
-     */
-
+    // Get network name from chain ID
     getNetworkName(chainId) {
         const networks = {
             '0x1': 'Ethereum Mainnet',
@@ -331,9 +322,7 @@ class AuthController {
         return networks[chainId] || 'Unknown Network';
     }
 
-    /**
-     * Toast Notification System
-     */
+    // Toast Notification System
     showToast(message, type = 'info') {
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
@@ -354,7 +343,11 @@ class AuthController {
         }
 
         container.appendChild(toast);
+
+        // Trigger reflow for animation
         toast.offsetHeight;
+
+        // Add show class
         toast.classList.add('show');
 
         setTimeout(() => {
@@ -363,6 +356,7 @@ class AuthController {
         }, 3000);
     }
 
+    // Form switching
     switchForm(formType) {
         if (this.currentForm === formType) return;
 
@@ -383,6 +377,7 @@ class AuthController {
         this.clearForms();
     }
 
+    // Update switch indicator position
     updateSwitchIndicator(formType) {
         this.switchIndicator.style.transition = 'none';
         this.switchIndicator.offsetHeight;
@@ -392,10 +387,13 @@ class AuthController {
         const buttonRect = activeButton.getBoundingClientRect();
 
         const leftPosition = buttonRect.left - switcherRect.left;
+
+        // Re-enable transition and move
         this.switchIndicator.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
         this.switchIndicator.style.transform = `translateX(${leftPosition}px)`;
     }
 
+    // Password Visibility Toggle
     togglePassword(e) {
         const button = e.currentTarget;
         const input = button.parentElement.querySelector('.input-field');
@@ -410,6 +408,7 @@ class AuthController {
         }
     }
 
+    // Form Validation
     validateInput(e) {
         const input = e.target;
         const value = input.value.trim();
@@ -452,6 +451,7 @@ class AuthController {
         return isValid;
     }
 
+    // Set Input Status
     setInputStatus(input, isValid, message = '') {
         const formGroup = input.closest('.form-group');
         const errorElement = formGroup.querySelector('.error-message');
@@ -473,6 +473,7 @@ class AuthController {
         }
     }
 
+    // Clear Error State
     clearError(e) {
         const formGroup = e.target.closest('.form-group');
         formGroup.classList.remove('error');
@@ -480,10 +481,13 @@ class AuthController {
         if (errorElement) errorElement.textContent = '';
     }
 
+    // Form Submission Handler
     async handleSubmit(e, formType) {
         e.preventDefault();
         const form = e.target;
         const submitBtn = form.querySelector('.submit-btn');
+
+        // Validate all inputs
         let isValid = true;
         form.querySelectorAll('.input-field').forEach(input => {
             if (!this.validateInput({ target: input })) {
@@ -495,10 +499,13 @@ class AuthController {
             this.showToast('Please fill all required fields correctly', 'error');
             return;
         }
+
+        // Show loading state
         submitBtn.classList.add('loading');
         submitBtn.disabled = true;
 
         try {
+            // Prepare form data
             const data = {
                 ...(formType === 'login' ? {
                     email: form.querySelector('#loginEmail')?.value?.trim(),
@@ -511,17 +518,20 @@ class AuthController {
                 })
             };
 
+            // Make the API call
             const response = await this.simulateApiCall(formType, data);
 
             if (response.status === 'success') {
                 this.showToast(response.message, 'success');
 
                 if (formType === 'register') {
+                    // Show success modal and switch to login
                     this.showSuccessModal();
                     setTimeout(() => {
                         this.switchForm('login');
                     }, 2000);
                 } else if (formType === 'login') {
+                    // Redirect to dashboard after successful login
                     setTimeout(() => {
                         window.location.href = '/dashboard.html';
                     }, 1000);
@@ -535,13 +545,15 @@ class AuthController {
         }
     }
 
+    // Real API Call
+    // public/js/auth.js
     async simulateApiCall(type, data) {
         const endpoint = type === 'login' ? '/api/auth/login' : '/api/auth/register';
 
         try {
             console.log(`Making ${type} request to ${endpoint}`);
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000);
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
             const response = await fetch(endpoint, {
                 method: 'POST',
@@ -563,7 +575,9 @@ class AuthController {
             }
 
             if (type === 'login' && responseData.data?.token) {
+                // Store auth token with 'Bearer' prefix
                 localStorage.setItem('authToken', `Bearer ${responseData.data.token}`);
+                // Store user data
                 localStorage.setItem('userData', JSON.stringify(responseData.data.user));
             }
 
@@ -581,10 +595,11 @@ class AuthController {
         const token = localStorage.getItem('authToken');
         return !!token;
     }
-
+    // Background Effects
     setupBackgroundEffects() {
         const spheres = document.querySelectorAll('.gradient-sphere');
 
+        // Parallax effect on mouse move
         document.addEventListener('mousemove', (e) => {
             const { clientX, clientY } = e;
             const centerX = window.innerWidth / 2;
@@ -599,13 +614,16 @@ class AuthController {
             });
         });
     }
+    // Add this method to the AuthController class
     setupAuthState() {
+        // Check if user is already logged in
         const token = localStorage.getItem('authToken');
         const userData = localStorage.getItem('userData');
 
         if (token && userData) {
             try {
                 this.currentUser = JSON.parse(userData);
+                // Add any additional auth state setup
                 return true;
             } catch (error) {
                 console.error('Error parsing user data:', error);
@@ -616,10 +634,11 @@ class AuthController {
         return false;
     }
 
+// Add logout method
     logout() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userData');
-        window.location.href = '/auth.html';
+        window.location.href = '/auth';
     }
 
     getUserData() {
@@ -628,6 +647,7 @@ class AuthController {
     }
 }
 
+// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new AuthController();
 });
