@@ -15,7 +15,7 @@ fastify.register(require('@fastify/cors'), {
     origin: [
         'http://localhost:3000',
         'http://localhost:9002',
-        'https://*.vercel.app',
+        'https://project-ivs.vercel.app',
         'https://api.ivs-testing.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
