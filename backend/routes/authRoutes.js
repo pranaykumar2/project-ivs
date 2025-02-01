@@ -6,7 +6,7 @@ const {
     validateLogin,
     validateForgotPassword,
     validateResetPassword
-} = require('../middlewares/validation');
+} = require('../middlewares/validate');
 
 const { verifyToken } = require('../middlewares/auth');
 
