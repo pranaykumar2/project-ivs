@@ -1,21 +1,48 @@
-const express = require('express');
-const router = express.Router();
+const { validateRegistration, validateLogin } = require('../middleware/validate');
 const authController = require('../controllers/authController');
-const {
-    validateRegistration,
-    validateLogin,
-    validateForgotPassword,
-    validateResetPassword
-} = require('../middlewares/validate');
 
-const { verifyToken } = require('../middlewares/auth');
+async function routes(fastify, options) {
+    fastify.post('/register', {
+        schema: {
+            body: {
+                type: 'object',
+                required: ['name', 'email', 'password'],
+                properties: {
+                    name: { type: 'string' },
+                    email: { type: 'string', format: 'email' },
+                    password: { type: 'string', minLength: 8 },
+                    walletAddress: { type: 'string' }
+                }
+            }
+        }
+    }, authController.register);
 
-router.post('/register', validateRegistration, authController.register);
-router.post('/login', validateLogin, authController.login);
-router.get('/verify-email', authController.verifyEmail);
-router.post('/resend-verification', authController.resendVerification);
-router.post('/logout', verifyToken, authController.logout);
-router.post('/forgot-password', validateForgotPassword, authController.forgotPassword);
-router.post('/reset-password', validateResetPassword, authController.resetPassword);
+    fastify.post('/login', {
+        schema: {
+            body: {
+                type: 'object',
+                required: ['email', 'password'],
+                properties: {
+                    email: { type: 'string', format: 'email' },
+                    password: { type: 'string' }
+                }
+            }
+        }
+    }, authController.login);
 
-module.exports = router;
+    fastify.post('/web3-auth', {
+        schema: {
+            body: {
+                type: 'object',
+                required: ['signature', 'walletAddress', 'message'],
+                properties: {
+                    signature: { type: 'string' },
+                    walletAddress: { type: 'string' },
+                    message: { type: 'string' }
+                }
+            }
+        }
+    }, authController.web3Auth);
+}
+
+module.exports = routes;
