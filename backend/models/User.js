@@ -73,7 +73,7 @@ userSchema.methods.generateAuthToken = async function() {
             .setProtectedHeader({ alg: 'HS256' })
             .setIssuedAt()
             .setExpirationTime('24h')
-            .setIssuer('ivs-testing-vercel')
+            .setIssuer('project-ivs')
             .setAudience('user')
             .sign(secret);
 
@@ -91,7 +91,7 @@ userSchema.statics.verifyToken = async function(token) {
         );
 
         const { payload } = await jose.jwtVerify(token, secret, {
-            issuer: 'ivs-testing-vercel',
+            issuer: 'project-ivs',
             audience: 'user'
         });
 
