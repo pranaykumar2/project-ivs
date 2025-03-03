@@ -32,7 +32,6 @@
 
 </div>
 
-/* Add to your README.md */
 <style>
 .watermarked-content::before {
     content: "CONFIDENTIAL";
