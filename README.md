@@ -32,27 +32,6 @@
 
 </div>
 
-<style>
-.watermarked-content::before {
-    content: "CONFIDENTIAL";
-    position: absolute;
-    top: 30%;
-    left: 0;
-    width: 100%;
-    height: 50px;
-    font-size: 4em;
-    color: rgba(255, 0, 0, 0.1);
-    transform: rotate(-45deg);
-    text-align: center;
-    pointer-events: none;
-    z-index: 999;
-}
-</style>
-
-<div class="watermarked-content">
-    <h1>Under Maintenance</h1>
-</div>
-
 ---
 
 <!-- Project Highlights -->
